@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">imdb</string>
+
+    <string name="search">Поиск</string>
+    <string name="something_went_wrong">Что-то пошло не так</string>
+    <string name="nothing_found">Ничего не найдено</string>
+</resources>
