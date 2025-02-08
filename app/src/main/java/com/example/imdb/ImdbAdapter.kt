@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
-class ImdbAdapter : RecyclerView.Adapter<ImdbViewHolder> () {
+class ImdbAdapter(val clickListener: MovieClickListener) : RecyclerView.Adapter<ImdbViewHolder> () {
 
     var movies = ArrayList<Movie>()
 
@@ -15,10 +15,14 @@ class ImdbAdapter : RecyclerView.Adapter<ImdbViewHolder> () {
 
     override fun onBindViewHolder(holder: ImdbViewHolder, position: Int) {
         holder.bind(movies.get(position))
+        holder.itemView.setOnClickListener { clickListener.onMovieClick(movies[position]) }
     }
 
     override fun getItemCount(): Int {
         return movies.size
     }
 
+    fun interface MovieClickListener {
+        fun onMovieClick(movie: Movie)
+    }
 }
