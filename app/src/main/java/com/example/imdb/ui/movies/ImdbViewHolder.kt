@@ -1,4 +1,4 @@
-package com.example.imdb.presentation
+package com.example.imdb.ui.movies
 
 import android.view.View
 import android.widget.ImageView

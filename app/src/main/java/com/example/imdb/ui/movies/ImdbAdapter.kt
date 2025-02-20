@@ -1,4 +1,4 @@
-package com.example.imdb.presentation
+package com.example.imdb.ui.movies
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -8,7 +8,7 @@ import com.example.imdb.domain.models.Movie
 
 class ImdbAdapter(val clickListener: MovieClickListener) : RecyclerView.Adapter<ImdbViewHolder> () {
 
-    var movies = ArrayList<Movie>()
+    var movies = listOf<Movie>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImdbViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_movie, parent, false)
