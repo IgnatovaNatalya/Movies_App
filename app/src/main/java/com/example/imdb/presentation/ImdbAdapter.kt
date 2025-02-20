@@ -1,8 +1,10 @@
-package com.example.imdb
+package com.example.imdb.presentation
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.imdb.R
+import com.example.imdb.domain.models.Movie
 
 class ImdbAdapter(val clickListener: MovieClickListener) : RecyclerView.Adapter<ImdbViewHolder> () {
 

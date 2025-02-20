@@ -1,4 +1,4 @@
-package com.example.imdb
+package com.example.imdb.ui.poster
 
 import android.os.Bundle
 import android.widget.ImageView
@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
+import com.example.imdb.R
 
 class PosterActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

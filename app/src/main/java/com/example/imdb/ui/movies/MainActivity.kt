@@ -1,4 +1,4 @@
-package com.example.imdb
+package com.example.imdb.ui.movies
 
 import android.content.Intent
 import android.os.Bundle
@@ -17,6 +17,12 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.imdb.presentation.ImdbAdapter
+import com.example.imdb.domain.models.Movie
+import com.example.imdb.MovieResponse
+import com.example.imdb.R
+import com.example.imdb.data.network.RetrofitInstance
+import com.example.imdb.ui.poster.PosterActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -120,7 +126,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun openPoster(movie:Movie) {
+    private fun openPoster(movie: Movie) {
         if (clickDebounce()) {
             val intent = Intent(this, PosterActivity::class.java)
             intent.putExtra("poster", movie.image)
