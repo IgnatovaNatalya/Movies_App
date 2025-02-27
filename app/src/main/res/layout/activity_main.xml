@@ -45,7 +45,7 @@
             tools:listitem="@layout/item_movie" />
 
         <TextView
-            android:id="@+id/weatherPlaceholderMessage"
+            android:id="@+id/placeholderMessage"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
