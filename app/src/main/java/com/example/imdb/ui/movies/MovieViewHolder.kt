@@ -9,7 +9,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.imdb.domain.models.Movie
 import com.example.imdb.R
 
-class ImdbViewHolder  (itemView: View): RecyclerView.ViewHolder(itemView) {
+class MovieViewHolder  (itemView: View): RecyclerView.ViewHolder(itemView) {
 
     private val tfTitle: TextView = itemView.findViewById(R.id.title)
     private val ivCover:ImageView = itemView.findViewById(R.id.cover)

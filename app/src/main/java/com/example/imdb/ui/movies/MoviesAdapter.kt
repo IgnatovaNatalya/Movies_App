@@ -6,16 +6,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.imdb.R
 import com.example.imdb.domain.models.Movie
 
-class MoviesAdapter(val clickListener: MovieClickListener) : RecyclerView.Adapter<ImdbViewHolder> () {
+class MoviesAdapter(val clickListener: MovieClickListener) : RecyclerView.Adapter<MovieViewHolder> () {
 
     var movies = listOf<Movie>()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImdbViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_movie, parent, false)
-        return ImdbViewHolder(view)
+        return MovieViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: ImdbViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
         holder.bind(movies.get(position))
         holder.itemView.setOnClickListener { clickListener.onMovieClick(movies[position]) }
     }

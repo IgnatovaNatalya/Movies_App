@@ -10,18 +10,20 @@ import android.view.View
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.imdb.R
+import com.example.imdb.creator.Creator
 import com.example.imdb.domain.api.MoviesInteractor
-import com.example.imdb.domain.models.Movie
+import com.example.imdb.domain.models.SearchResult
 import com.example.imdb.ui.movies.MoviesAdapter
 
 class MoviesSearchController(private val activity: Activity,
                              private val adapter: MoviesAdapter
 ) {
 
-    private lateinit var moviesInteractor: MoviesInteractor
+    private  var moviesInteractor=  Creator.provideMoviesInteractor()
 
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
@@ -31,8 +33,6 @@ class MoviesSearchController(private val activity: Activity,
     private lateinit var placeholderMessage: TextView
     private lateinit var recyclerMovie: RecyclerView
     private lateinit var progressBar: ProgressBar
-
-    private var query = ""
 
     private val handler = Handler(Looper.getMainLooper())
 
@@ -73,23 +73,57 @@ class MoviesSearchController(private val activity: Activity,
         recyclerMovie.visibility = View.GONE
         progressBar.visibility = View.VISIBLE
 
-        moviesInteractor.searchMovies(query, object : MoviesInteractor.MoviesConsumer {
+        moviesInteractor.searchMovies(queryInput.text.toString(), object : MoviesInteractor.MoviesConsumer {
             @SuppressLint("NotifyDataSetChanged")
-            override fun consume(foundMovies: List<Movie>) {
-                runOnUiThread {
-                    adapter.movies = foundMovies
-                    recyclerMovie.visibility = View.VISIBLE
-                    adapter.notifyDataSetChanged()
+            override fun consume(searchResult: SearchResult) {
+                handler.post{
+                    progressBar.visibility = View.GONE
+                    when (searchResult.resultCode) {
+                      200-> {
+                          if (searchResult.results.isNotEmpty()) {
+                              hideMessage()
+                              adapter.movies = searchResult.results
+                              //recyclerMovie.visibility = View.VISIBLE
+                              adapter.notifyDataSetChanged()
+                          }
+                          else {
+                              showMessage(activity.getString(R.string.nothing_found), "")
+                          }
+                      }
+                        else -> {
+                            showMessage(activity.getString(R.string.something_went_wrong), "")
+                        }
+                    }
                 }
             }
         })
     }
 
-
-
     private fun loadMoviesDebounce() {
         handler.removeCallbacks(searchMoviesRunnable)
         handler.postDelayed(searchMoviesRunnable, SEARCH_DEBOUNCE_DELAY)
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun showMessage(text: String, additionalMessage: String) {
+        if (text.isNotEmpty()) {
+            placeholderMessage.visibility = View.VISIBLE
+            recyclerMovie.visibility = View.GONE
+            adapter.notifyDataSetChanged()
+            placeholderMessage.text = text
+            if (additionalMessage.isNotEmpty()) {
+                Toast.makeText(activity, additionalMessage, Toast.LENGTH_LONG)
+                    .show()
+            }
+        } else {
+            placeholderMessage.visibility = View.GONE
+            recyclerMovie.visibility = View.VISIBLE
+        }
+    }
+
+    private fun hideMessage() {
+        placeholderMessage.visibility = View.GONE
+        recyclerMovie.visibility = View.VISIBLE
     }
 
 }
