@@ -8,17 +8,16 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-
 import com.example.imdb.R
-import com.example.imdb.creator.Creator
 import com.example.imdb.domain.models.Movie
 import com.example.imdb.ui.poster.PosterActivity
+import com.example.imdb.util.Creator
 
 const val CLICK_DEBOUNCE_DELAY = 1000L
 
 class MainActivity : AppCompatActivity() {
 
-    private  val adapter= MoviesAdapter{ openPoster(it) }
+    private val adapter = MoviesAdapter { openPoster(it) }
 
     private var isClickAllowed = true
 

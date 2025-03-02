@@ -11,19 +11,19 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.imdb.R
-import com.example.imdb.creator.Creator
 import com.example.imdb.domain.api.MoviesInteractor
-import com.example.imdb.domain.models.SearchResult
+import com.example.imdb.domain.models.Movie
 import com.example.imdb.ui.movies.MoviesAdapter
+import com.example.imdb.util.Creator
 
 class MoviesSearchController(private val activity: Activity,
                              private val adapter: MoviesAdapter
 ) {
 
-    private  var moviesInteractor=  Creator.provideMoviesInteractor()
+    private var moviesInteractor = Creator.provideMoviesInteractor(activity)
 
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
@@ -44,22 +44,17 @@ class MoviesSearchController(private val activity: Activity,
         recyclerMovie = activity.findViewById(R.id.recMovies)
         progressBar = activity.findViewById(R.id.progressBar)
 
-        //adapter.movies = movies
-
         recyclerMovie.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         recyclerMovie.adapter = adapter
 
         queryInput.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
-
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 loadMoviesDebounce()
             }
-
             override fun afterTextChanged(p0: Editable?) {
             }
-
         })
     }
 
@@ -75,23 +70,22 @@ class MoviesSearchController(private val activity: Activity,
 
         moviesInteractor.searchMovies(queryInput.text.toString(), object : MoviesInteractor.MoviesConsumer {
             @SuppressLint("NotifyDataSetChanged")
-            override fun consume(searchResult: SearchResult) {
+            override fun consume(foundMovies: List<Movie>?, errorMessage: String?) {
                 handler.post{
                     progressBar.visibility = View.GONE
-                    when (searchResult.resultCode) {
-                      200-> {
-                          if (searchResult.results.isNotEmpty()) {
-                              hideMessage()
-                              adapter.movies = searchResult.results
-                              //recyclerMovie.visibility = View.VISIBLE
-                              adapter.notifyDataSetChanged()
-                          }
-                          else {
-                              showMessage(activity.getString(R.string.nothing_found), "")
-                          }
-                      }
-                        else -> {
-                            showMessage(activity.getString(R.string.something_went_wrong), "")
+                    if (foundMovies != null) {
+                        //if (foundMovies.isNotEmpty()) {
+                            adapter.movies = foundMovies
+                            adapter.notifyDataSetChanged()
+                            recyclerMovie.visibility = View.VISIBLE
+                        //} else showMessage(activity.getString(R.string.nothing_found), "")
+                    }
+                    else {
+                        if (errorMessage != null) {
+                            showMessage(
+                                errorMessage,
+                                errorMessage
+                            )
                         }
                     }
                 }
