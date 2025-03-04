@@ -1,15 +1,14 @@
 package com.example.imdb.util
 
-
-import android.app.Activity
 import android.content.Context
 import com.example.imdb.data.MoviesRepositoryImpl
 import com.example.imdb.data.network.RetrofitNetworkClient
 import com.example.imdb.domain.api.*
 import com.example.imdb.domain.impl.MoviesInteractorImpl
-import com.example.imdb.presentation.MoviesSearchController
-import com.example.imdb.presentation.PosterController
-import com.example.imdb.ui.movies.MoviesAdapter
+import com.example.imdb.presentation.movies.MoviesSearchPresenter
+import com.example.imdb.presentation.poster.PosterPresenter
+import com.example.imdb.presentation.movies.MoviesView
+import com.example.imdb.presentation.poster.PosterView
 
 object Creator {
     private fun getMoviesRepository(context: Context): MoviesRepository {
@@ -20,14 +19,13 @@ object Creator {
         return MoviesInteractorImpl(getMoviesRepository(context))
     }
 
-    fun provideMoviesSearchController(
-        activity: Activity,
-        adapter: MoviesAdapter
-    ): MoviesSearchController {
-        return MoviesSearchController(activity, adapter)
+    fun provideMoviesSearchPresenter(
+        moviesView: MoviesView, context: Context
+    ): MoviesSearchPresenter {
+        return MoviesSearchPresenter(moviesView, context)
     }
 
-    fun providePosterController(activity: Activity): PosterController {
-        return PosterController(activity)
+    fun providePosterPresenter(posterView: PosterView): PosterPresenter {
+        return PosterPresenter(posterView,)
     }
 }

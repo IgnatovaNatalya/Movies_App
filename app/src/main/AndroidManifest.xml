@@ -19,7 +19,7 @@
             android:name=".ui.poster.PosterActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.movies.MainActivity"
+            android:name=".ui.movies.MoviesActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
