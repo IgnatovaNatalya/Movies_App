@@ -5,7 +5,7 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
-import android.widget.Toast
+import com.example.imdb.R
 import com.example.imdb.domain.api.MoviesInteractor
 import com.example.imdb.domain.models.Movie
 import com.example.imdb.util.Creator
@@ -48,24 +48,20 @@ class MoviesSearchPresenter(
 
     private fun loadMovies(newQueryText: String) {
         if (newQueryText.isNotEmpty()) {
-            view.showPlaceholderMessage(false)
-            view.showMoviesList(false)
-            view.showProgressBar(true)
+            view.showLoading()
 
             moviesInteractor.searchMovies(
                 newQueryText,
                 object : MoviesInteractor.MoviesConsumer {
                     override fun consume(foundMovies: List<Movie>?, errorMessage: String?) {
                         handler.post {
-                            view.showProgressBar(false)
-                            if (foundMovies != null) {
-                                view.updateMoviesList(foundMovies)
-                                view.showMoviesList(true)
-                            } else {
-                                if (errorMessage != null) {
-                                    showMessage(errorMessage, errorMessage)
-                                }
-                            }
+                            if (errorMessage != null) {
+                                view.showError(context.getString(R.string.something_went_wrong))
+                                view.showToast(errorMessage)
+                            } else
+                                if (foundMovies != null)
+                                    if (foundMovies.isNotEmpty()) view.showContent(foundMovies)
+                                    else view.showEmpty(context.getString(R.string.nothing_found))
                         }
                     }
                 })
@@ -76,22 +72,4 @@ class MoviesSearchPresenter(
         handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
     }
 
-    private fun showMessage(text: String, additionalMessage: String) {
-        if (text.isNotEmpty()) {
-            view.showPlaceholderMessage(true)
-            view.showMoviesList(false)
-            view.setPlaceHolderMessage(text)
-
-            if (additionalMessage.isNotEmpty()) view.showToast(additionalMessage)
-
-        } else {
-            view.showPlaceholderMessage(false)
-            view.showMoviesList(true)
-        }
-    }
-
-    private fun hideMessage() {
-        view.showPlaceholderMessage(false)
-        view.showMoviesList(true)
-    }
 }

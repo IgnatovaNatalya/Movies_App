@@ -99,25 +99,6 @@ class MoviesActivity : AppCompatActivity(), MoviesView {
         }
     }
 
-    override fun showPlaceholderMessage(isVisible: Boolean) {
-        if (isVisible)  placeholderMessage.visibility  = View.VISIBLE
-        else placeholderMessage.visibility  = View.GONE
-    }
-
-    override fun setPlaceHolderMessage(message: String) {
-        placeholderMessage.text = message
-    }
-
-    override fun showMoviesList(isVisible: Boolean) {
-        if (isVisible)  recyclerMovie.visibility = View.VISIBLE
-        else  recyclerMovie.visibility = View.GONE
-    }
-
-    override fun showProgressBar(isVisible: Boolean) {
-        if (isVisible) progressBar.visibility = View.VISIBLE
-        else  progressBar.visibility = View.GONE
-    }
-
     @SuppressLint("NotifyDataSetChanged")
     override fun updateMoviesList(newMoviesList: List<Movie>) {
         adapter.movies = newMoviesList
@@ -126,5 +107,33 @@ class MoviesActivity : AppCompatActivity(), MoviesView {
 
     override fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+    }
+
+    override fun showLoading() {
+        recyclerMovie.visibility = View.GONE
+        placeholderMessage.visibility = View.GONE
+        progressBar.visibility = View.VISIBLE
+    }
+
+    override fun showError(errorMessage: String) {
+        recyclerMovie.visibility = View.GONE
+        placeholderMessage.visibility = View.VISIBLE
+        progressBar.visibility = View.GONE
+
+        placeholderMessage.text = errorMessage
+    }
+
+    override fun showEmpty(emptyMessage: String) {
+        showError(emptyMessage)
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    override fun showContent(movies: List<Movie>) {
+        recyclerMovie.visibility = View.VISIBLE
+        placeholderMessage.visibility = View.GONE
+        progressBar.visibility = View.GONE
+
+        adapter.movies = movies
+        adapter.notifyDataSetChanged()
     }
 }
