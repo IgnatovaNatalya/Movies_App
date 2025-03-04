@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -121,5 +122,9 @@ class MoviesActivity : AppCompatActivity(), MoviesView {
     override fun updateMoviesList(newMoviesList: List<Movie>) {
         adapter.movies = newMoviesList
         adapter.notifyDataSetChanged()
+    }
+
+    override fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 }

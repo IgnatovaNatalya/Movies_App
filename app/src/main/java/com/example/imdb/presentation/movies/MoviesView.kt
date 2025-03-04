@@ -16,4 +16,6 @@ interface MoviesView {
 
     fun updateMoviesList(newMoviesList: List<Movie>)
 
+    fun showToast(message: String)
+
 }

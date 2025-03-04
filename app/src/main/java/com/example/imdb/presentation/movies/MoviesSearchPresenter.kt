@@ -82,9 +82,8 @@ class MoviesSearchPresenter(
             view.showMoviesList(false)
             view.setPlaceHolderMessage(text)
 
-            if (additionalMessage.isNotEmpty()) {
-                Toast.makeText(context, additionalMessage, Toast.LENGTH_LONG)
-                    .show() }
+            if (additionalMessage.isNotEmpty()) view.showToast(additionalMessage)
+
         } else {
             view.showPlaceholderMessage(false)
             view.showMoviesList(true)
