@@ -109,13 +109,22 @@ class MoviesActivity : AppCompatActivity(), MoviesView {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 
-    override fun showLoading() {
+    override fun render(state: SearchMoviesState) {
+        when (state) {
+            is SearchMoviesState.Content -> showContent(state.movies)
+            is SearchMoviesState.Empty -> showEmpty(state.message)
+            is SearchMoviesState.Error ->  showError(state.errorMessage)
+            is SearchMoviesState.Loading -> showLoading()
+        }
+    }
+
+    private fun showLoading() {
         recyclerMovie.visibility = View.GONE
         placeholderMessage.visibility = View.GONE
         progressBar.visibility = View.VISIBLE
     }
 
-    override fun showError(errorMessage: String) {
+    private fun showError(errorMessage: String) {
         recyclerMovie.visibility = View.GONE
         placeholderMessage.visibility = View.VISIBLE
         progressBar.visibility = View.GONE
@@ -123,12 +132,12 @@ class MoviesActivity : AppCompatActivity(), MoviesView {
         placeholderMessage.text = errorMessage
     }
 
-    override fun showEmpty(emptyMessage: String) {
+    private fun showEmpty(emptyMessage: String) {
         showError(emptyMessage)
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    override fun showContent(movies: List<Movie>) {
+    private fun showContent(movies: List<Movie>) {
         recyclerMovie.visibility = View.VISIBLE
         placeholderMessage.visibility = View.GONE
         progressBar.visibility = View.GONE

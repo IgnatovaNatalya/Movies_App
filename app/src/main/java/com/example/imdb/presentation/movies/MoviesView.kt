@@ -1,6 +1,7 @@
 package com.example.imdb.presentation.movies
 
 import com.example.imdb.domain.models.Movie
+import com.example.imdb.ui.movies.SearchMoviesState
 
 interface MoviesView {
 
@@ -8,9 +9,5 @@ interface MoviesView {
 
     fun showToast(message: String)
 
-    fun showLoading()
-    fun showError(errorMessage: String)
-    fun showEmpty(emptyMessage: String)
-    fun showContent(movies: List<Movie>)
-
+    fun render(state: SearchMoviesState)
 }

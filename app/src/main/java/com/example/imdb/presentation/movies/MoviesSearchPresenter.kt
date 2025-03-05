@@ -8,6 +8,7 @@ import android.os.SystemClock
 import com.example.imdb.R
 import com.example.imdb.domain.api.MoviesInteractor
 import com.example.imdb.domain.models.Movie
+import com.example.imdb.ui.movies.SearchMoviesState
 import com.example.imdb.util.Creator
 
 class MoviesSearchPresenter(
@@ -48,20 +49,22 @@ class MoviesSearchPresenter(
 
     private fun loadMovies(newQueryText: String) {
         if (newQueryText.isNotEmpty()) {
-            view.showLoading()
+            view.render(SearchMoviesState.Loading)
 
             moviesInteractor.searchMovies(
                 newQueryText,
                 object : MoviesInteractor.MoviesConsumer {
                     override fun consume(foundMovies: List<Movie>?, errorMessage: String?) {
                         handler.post {
-                            if (errorMessage != null) {
-                                view.showError(context.getString(R.string.something_went_wrong))
-                                view.showToast(errorMessage)
-                            } else
-                                if (foundMovies != null)
-                                    if (foundMovies.isNotEmpty()) view.showContent(foundMovies)
-                                    else view.showEmpty(context.getString(R.string.nothing_found))
+                            if (foundMovies != null) {
+                                if (foundMovies.isNotEmpty())
+                                    view.render(SearchMoviesState.Content(foundMovies))
+                                else if (errorMessage != null)
+                                    view.render(SearchMoviesState.Empty(errorMessage.toString()))
+                            } else {
+                                view.render(SearchMoviesState.Error(context.getString(R.string.something_went_wrong)))
+                                view.showToast(errorMessage.toString())
+                            }
                         }
                     }
                 })
