@@ -18,15 +18,22 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.imdb.MoviesApp
 import com.example.imdb.R
 import com.example.imdb.domain.models.Movie
+import com.example.imdb.presentation.movies.MoviesSearchPresenter
 import com.example.imdb.presentation.movies.MoviesView
 import com.example.imdb.ui.poster.PosterActivity
 import com.example.imdb.util.Creator
 
-const val CLICK_DEBOUNCE_DELAY = 1000L
 
 class MoviesActivity : AppCompatActivity(), MoviesView {
+
+    companion object {
+        const val CLICK_DEBOUNCE_DELAY = 1000L
+        @SuppressLint("StaticFieldLeak")
+        private var moviesSearchPresenter: MoviesSearchPresenter? = null
+    }
 
     private lateinit var queryInput: EditText
     private lateinit var placeholderMessage: TextView
@@ -38,8 +45,6 @@ class MoviesActivity : AppCompatActivity(), MoviesView {
     private var isClickAllowed = true
 
     private val handler = Handler(Looper.getMainLooper())
-
-    private val moviesSearchPresenter = Creator.provideMoviesSearchPresenter(this, this)
 
     private var textWatcher: TextWatcher? = null
 
@@ -53,6 +58,15 @@ class MoviesActivity : AppCompatActivity(), MoviesView {
             insets
         }
 
+        val myApp = (this.applicationContext as? MoviesApp)
+
+        moviesSearchPresenter = myApp?.moviesSearchPresenter
+
+        if (moviesSearchPresenter == null)
+            moviesSearchPresenter = Creator.provideMoviesSearchPresenter(this.applicationContext)
+
+        myApp?.moviesSearchPresenter = moviesSearchPresenter
+
         placeholderMessage = findViewById(R.id.placeholderMessage)
         queryInput = findViewById(R.id.queryInput)
         recyclerMovie = findViewById(R.id.recMovies)
@@ -64,22 +78,15 @@ class MoviesActivity : AppCompatActivity(), MoviesView {
         textWatcher = object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
+
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                moviesSearchPresenter.loadMoviesDebounce(changedText = p0?.toString() ?: "")
+                moviesSearchPresenter?.loadMoviesDebounce(changedText = p0?.toString() ?: "")
             }
+
             override fun afterTextChanged(p0: Editable?) {
             }
         }
         queryInput.addTextChangedListener(textWatcher)
-        //textWatcher?.let { queryInput.addTextChangedListener(it) }
-
-        //moviesSearchPresenter.onCreate()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        queryInput.removeTextChangedListener(textWatcher)
-        moviesSearchPresenter.onDestroy()
     }
 
     private fun clickDebounce(): Boolean { //дебаунс для нажатия на постер
@@ -113,7 +120,7 @@ class MoviesActivity : AppCompatActivity(), MoviesView {
         when (state) {
             is SearchMoviesState.Content -> showContent(state.movies)
             is SearchMoviesState.Empty -> showEmpty(state.message)
-            is SearchMoviesState.Error ->  showError(state.errorMessage)
+            is SearchMoviesState.Error -> showError(state.errorMessage)
             is SearchMoviesState.Loading -> showLoading()
         }
     }
@@ -144,5 +151,40 @@ class MoviesActivity : AppCompatActivity(), MoviesView {
 
         adapter.movies = movies
         adapter.notifyDataSetChanged()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        moviesSearchPresenter?.attachView(this)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        moviesSearchPresenter?.attachView(this)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        queryInput.removeTextChangedListener(textWatcher)
+        moviesSearchPresenter?.detachView()
+        moviesSearchPresenter?.onDestroy()
+
+        if (isFinishing)
+            (this.application as? MoviesApp)?.moviesSearchPresenter = null
+    }
+
+    override fun onPause() {
+        super.onPause()
+        moviesSearchPresenter?.detachView()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        moviesSearchPresenter?.detachView()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        moviesSearchPresenter?.detachView()
     }
 }

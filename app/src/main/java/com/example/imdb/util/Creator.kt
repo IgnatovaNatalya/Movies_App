@@ -7,7 +7,6 @@ import com.example.imdb.domain.api.*
 import com.example.imdb.domain.impl.MoviesInteractorImpl
 import com.example.imdb.presentation.movies.MoviesSearchPresenter
 import com.example.imdb.presentation.poster.PosterPresenter
-import com.example.imdb.presentation.movies.MoviesView
 import com.example.imdb.presentation.poster.PosterView
 
 object Creator {
@@ -19,10 +18,8 @@ object Creator {
         return MoviesInteractorImpl(getMoviesRepository(context))
     }
 
-    fun provideMoviesSearchPresenter(
-        moviesView: MoviesView, context: Context
-    ): MoviesSearchPresenter {
-        return MoviesSearchPresenter(moviesView, context)
+    fun provideMoviesSearchPresenter( context: Context ): MoviesSearchPresenter {
+        return MoviesSearchPresenter(context)
     }
 
     fun providePosterPresenter(posterView: PosterView): PosterPresenter {

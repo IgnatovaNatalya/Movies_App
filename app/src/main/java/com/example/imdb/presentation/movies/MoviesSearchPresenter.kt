@@ -12,9 +12,12 @@ import com.example.imdb.ui.movies.SearchMoviesState
 import com.example.imdb.util.Creator
 
 class MoviesSearchPresenter(
-    private val view: MoviesView,
     private val context: Context
 ) {
+
+    private var view: MoviesView? = null
+    private var state: SearchMoviesState? = null
+    private var latestQueryText: String? = null
 
     private var moviesInteractor = Creator.provideMoviesInteractor(context)
 
@@ -25,7 +28,20 @@ class MoviesSearchPresenter(
 
     private val handler = Handler(Looper.getMainLooper())
 
+    fun attachView(view: MoviesView) {
+        this.view = view
+        state?.let { view.render(it) }
+    }
+
+    fun detachView() {
+        this.view = null
+    }
+
     fun loadMoviesDebounce(changedText: String) {
+
+        if (latestQueryText == changedText) return
+
+        latestQueryText = changedText
 
         handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
 
@@ -49,7 +65,7 @@ class MoviesSearchPresenter(
 
     private fun loadMovies(newQueryText: String) {
         if (newQueryText.isNotEmpty()) {
-            view.render(SearchMoviesState.Loading)
+            renderState(SearchMoviesState.Loading)
 
             moviesInteractor.searchMovies(
                 newQueryText,
@@ -58,12 +74,12 @@ class MoviesSearchPresenter(
                         handler.post {
                             if (foundMovies != null) {
                                 if (foundMovies.isNotEmpty())
-                                    view.render(SearchMoviesState.Content(foundMovies))
+                                    renderState(SearchMoviesState.Content(foundMovies))
                                 else if (errorMessage != null)
-                                    view.render(SearchMoviesState.Empty(errorMessage.toString()))
+                                    renderState(SearchMoviesState.Empty(errorMessage.toString()))
                             } else {
-                                view.render(SearchMoviesState.Error(context.getString(R.string.something_went_wrong)))
-                                view.showToast(errorMessage.toString())
+                                renderState(SearchMoviesState.Error(context.getString(R.string.something_went_wrong)))
+                                view?.showToast(errorMessage.toString())
                             }
                         }
                     }
@@ -71,8 +87,12 @@ class MoviesSearchPresenter(
         }
     }
 
+    private fun renderState(state: SearchMoviesState) {
+        this.state = state
+        this.view?.render(state)
+    }
+
     fun onDestroy() {
         handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
     }
-
 }
