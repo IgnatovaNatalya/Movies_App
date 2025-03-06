@@ -10,13 +10,12 @@ import com.example.imdb.domain.api.MoviesInteractor
 import com.example.imdb.domain.models.Movie
 import com.example.imdb.ui.movies.SearchMoviesState
 import com.example.imdb.util.Creator
+import moxy.MvpPresenter
 
 class MoviesSearchPresenter(
     private val context: Context
-) {
+) : MvpPresenter<MoviesView>() {
 
-    private var view: MoviesView? = null
-    private var state: SearchMoviesState? = null
     private var latestQueryText: String? = null
 
     private var moviesInteractor = Creator.provideMoviesInteractor(context)
@@ -28,14 +27,6 @@ class MoviesSearchPresenter(
 
     private val handler = Handler(Looper.getMainLooper())
 
-    fun attachView(view: MoviesView) {
-        this.view = view
-        state?.let { view.render(it) }
-    }
-
-    fun detachView() {
-        this.view = null
-    }
 
     fun loadMoviesDebounce(changedText: String) {
 
@@ -79,7 +70,7 @@ class MoviesSearchPresenter(
                                     renderState(SearchMoviesState.Empty(errorMessage.toString()))
                             } else {
                                 renderState(SearchMoviesState.Error(context.getString(R.string.something_went_wrong)))
-                                view?.showToast(errorMessage.toString())
+                                viewState?.showToast(errorMessage.toString())
                             }
                         }
                     }
@@ -88,11 +79,10 @@ class MoviesSearchPresenter(
     }
 
     private fun renderState(state: SearchMoviesState) {
-        this.state = state
-        this.view?.render(state)
+        viewState.render(state)
     }
 
-    fun onDestroy() {
+    override fun onDestroy() {
         handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
     }
 }

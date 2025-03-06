@@ -12,27 +12,27 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.imdb.MoviesApp
 import com.example.imdb.R
 import com.example.imdb.domain.models.Movie
 import com.example.imdb.presentation.movies.MoviesSearchPresenter
 import com.example.imdb.presentation.movies.MoviesView
 import com.example.imdb.ui.poster.PosterActivity
 import com.example.imdb.util.Creator
+import moxy.MvpActivity
+import moxy.presenter.InjectPresenter
+import moxy.presenter.ProvidePresenter
 
 
-class MoviesActivity : AppCompatActivity(), MoviesView {
+class MoviesActivity : MvpActivity(), MoviesView {
 
     companion object {
         const val CLICK_DEBOUNCE_DELAY = 1000L
-        @SuppressLint("StaticFieldLeak")
-        private var moviesSearchPresenter: MoviesSearchPresenter? = null
+        //@SuppressLint("StaticFieldLeak")
+        //private var moviesSearchPresenter: MoviesSearchPresenter? = null
     }
 
     private lateinit var queryInput: EditText
@@ -48,24 +48,26 @@ class MoviesActivity : AppCompatActivity(), MoviesView {
 
     private var textWatcher: TextWatcher? = null
 
+    @InjectPresenter
+    lateinit var moviesSearchPresenter: MoviesSearchPresenter
+
+    @ProvidePresenter
+    fun providePresenter(): MoviesSearchPresenter {
+        return Creator.provideMoviesSearchPresenter(
+            context = this.applicationContext,
+        )
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        //enableEdgeToEdge()
+
         setContentView(R.layout.activity_main)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
-        val myApp = (this.applicationContext as? MoviesApp)
-
-        moviesSearchPresenter = myApp?.moviesSearchPresenter
-
-        if (moviesSearchPresenter == null)
-            moviesSearchPresenter = Creator.provideMoviesSearchPresenter(this.applicationContext)
-
-        myApp?.moviesSearchPresenter = moviesSearchPresenter
 
         placeholderMessage = findViewById(R.id.placeholderMessage)
         queryInput = findViewById(R.id.queryInput)
@@ -80,7 +82,7 @@ class MoviesActivity : AppCompatActivity(), MoviesView {
             }
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                moviesSearchPresenter?.loadMoviesDebounce(changedText = p0?.toString() ?: "")
+                moviesSearchPresenter.loadMoviesDebounce(changedText = p0?.toString() ?: "")
             }
 
             override fun afterTextChanged(p0: Editable?) {
@@ -104,12 +106,6 @@ class MoviesActivity : AppCompatActivity(), MoviesView {
             intent.putExtra("poster", movie.image)
             startActivity(intent)
         }
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    override fun updateMoviesList(newMoviesList: List<Movie>) {
-        adapter.movies = newMoviesList
-        adapter.notifyDataSetChanged()
     }
 
     override fun showToast(message: String) {
@@ -153,38 +149,9 @@ class MoviesActivity : AppCompatActivity(), MoviesView {
         adapter.notifyDataSetChanged()
     }
 
-    override fun onStart() {
-        super.onStart()
-        moviesSearchPresenter?.attachView(this)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        moviesSearchPresenter?.attachView(this)
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         queryInput.removeTextChangedListener(textWatcher)
-        moviesSearchPresenter?.detachView()
-        moviesSearchPresenter?.onDestroy()
-
-        if (isFinishing)
-            (this.application as? MoviesApp)?.moviesSearchPresenter = null
     }
 
-    override fun onPause() {
-        super.onPause()
-        moviesSearchPresenter?.detachView()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        moviesSearchPresenter?.detachView()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        moviesSearchPresenter?.detachView()
-    }
 }
