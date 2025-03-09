@@ -8,87 +8,76 @@ import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.widget.EditText
-import android.widget.ProgressBar
-import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.ComponentActivity
+import androidx.activity.enableEdgeToEdge
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.imdb.R
+import com.example.imdb.databinding.ActivityMainBinding
 import com.example.imdb.domain.models.Movie
-import com.example.imdb.presentation.movies.MoviesSearchPresenter
-import com.example.imdb.presentation.movies.MoviesView
+import com.example.imdb.presentation.movies.MoviesSearchViewModel
 import com.example.imdb.ui.poster.PosterActivity
-import com.example.imdb.util.Creator
-import moxy.MvpActivity
-import moxy.presenter.InjectPresenter
-import moxy.presenter.ProvidePresenter
 
 
-class MoviesActivity : MvpActivity(), MoviesView {
+class MoviesActivity : ComponentActivity() {
 
     companion object {
         const val CLICK_DEBOUNCE_DELAY = 1000L
-        //@SuppressLint("StaticFieldLeak")
-        //private var moviesSearchPresenter: MoviesSearchPresenter? = null
     }
-
-    private lateinit var queryInput: EditText
-    private lateinit var placeholderMessage: TextView
-    private lateinit var recyclerMovie: RecyclerView
-    private lateinit var progressBar: ProgressBar
 
     private val adapter = MoviesAdapter { openPoster(it) }
-
     private var isClickAllowed = true
-
     private val handler = Handler(Looper.getMainLooper())
-
     private var textWatcher: TextWatcher? = null
-
-    @InjectPresenter
-    lateinit var moviesSearchPresenter: MoviesSearchPresenter
-
-    @ProvidePresenter
-    fun providePresenter(): MoviesSearchPresenter {
-        return Creator.provideMoviesSearchPresenter(
-            context = this.applicationContext,
-        )
-    }
+    private lateinit var binding: ActivityMainBinding
+    private lateinit var viewModel: MoviesSearchViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //enableEdgeToEdge()
+        enableEdgeToEdge()
 
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        placeholderMessage = findViewById(R.id.placeholderMessage)
-        queryInput = findViewById(R.id.queryInput)
-        recyclerMovie = findViewById(R.id.recMovies)
-        progressBar = findViewById(R.id.progressBar)
+        viewModel = ViewModelProvider(
+            this,
+            MoviesSearchViewModel.getViewModelFactory()
+        )[MoviesSearchViewModel::class.java]
 
-        recyclerMovie.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        recyclerMovie.adapter = adapter
+        viewModel.observeState().observe(this) {
+            render(it)
+        }
+
+        viewModel.observeToastState().observe(this) { toastState ->
+            if (toastState is ToastState.Show) {
+                showToast(toastState.additionalMessage)
+                viewModel.toastWasShown()
+            }
+        }
+
+        binding.recyclerMovies.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        binding.recyclerMovies.adapter = adapter
 
         textWatcher = object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                moviesSearchPresenter.loadMoviesDebounce(changedText = p0?.toString() ?: "")
+                this@MoviesActivity.viewModel.loadMoviesDebounce(changedText = p0?.toString() ?: "")
             }
 
             override fun afterTextChanged(p0: Editable?) {
             }
         }
-        queryInput.addTextChangedListener(textWatcher)
+        binding.queryInput.addTextChangedListener(textWatcher)
     }
 
     private fun clickDebounce(): Boolean { //дебаунс для нажатия на постер
@@ -108,31 +97,30 @@ class MoviesActivity : MvpActivity(), MoviesView {
         }
     }
 
-    override fun showToast(message: String) {
+    private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 
-    override fun render(state: SearchMoviesState) {
+    private fun render(state: MoviesState) {
         when (state) {
-            is SearchMoviesState.Content -> showContent(state.movies)
-            is SearchMoviesState.Empty -> showEmpty(state.message)
-            is SearchMoviesState.Error -> showError(state.errorMessage)
-            is SearchMoviesState.Loading -> showLoading()
+            is MoviesState.Content -> showContent(state.movies)
+            is MoviesState.Empty -> showEmpty(state.message)
+            is MoviesState.Error -> showError(state.errorMessage)
+            is MoviesState.Loading -> showLoading()
         }
     }
 
     private fun showLoading() {
-        recyclerMovie.visibility = View.GONE
-        placeholderMessage.visibility = View.GONE
-        progressBar.visibility = View.VISIBLE
+        binding.recyclerMovies.visibility = View.GONE
+        binding.placeholderMessage.visibility = View.GONE
+        binding.progressBar.visibility = View.VISIBLE
     }
 
     private fun showError(errorMessage: String) {
-        recyclerMovie.visibility = View.GONE
-        placeholderMessage.visibility = View.VISIBLE
-        progressBar.visibility = View.GONE
-
-        placeholderMessage.text = errorMessage
+        binding.recyclerMovies.visibility = View.GONE
+        binding.placeholderMessage.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.GONE
+        binding.placeholderMessage.text = errorMessage
     }
 
     private fun showEmpty(emptyMessage: String) {
@@ -141,9 +129,9 @@ class MoviesActivity : MvpActivity(), MoviesView {
 
     @SuppressLint("NotifyDataSetChanged")
     private fun showContent(movies: List<Movie>) {
-        recyclerMovie.visibility = View.VISIBLE
-        placeholderMessage.visibility = View.GONE
-        progressBar.visibility = View.GONE
+        binding.recyclerMovies.visibility = View.VISIBLE
+        binding.placeholderMessage.visibility = View.GONE
+        binding.progressBar.visibility = View.GONE
 
         adapter.movies = movies
         adapter.notifyDataSetChanged()
@@ -151,7 +139,6 @@ class MoviesActivity : MvpActivity(), MoviesView {
 
     override fun onDestroy() {
         super.onDestroy()
-        queryInput.removeTextChangedListener(textWatcher)
+        binding.queryInput.removeTextChangedListener(textWatcher)
     }
-
 }

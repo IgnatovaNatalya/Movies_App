@@ -5,7 +5,6 @@ import com.example.imdb.data.MoviesRepositoryImpl
 import com.example.imdb.data.network.RetrofitNetworkClient
 import com.example.imdb.domain.api.*
 import com.example.imdb.domain.impl.MoviesInteractorImpl
-import com.example.imdb.presentation.movies.MoviesSearchPresenter
 import com.example.imdb.presentation.poster.PosterPresenter
 import com.example.imdb.presentation.poster.PosterView
 
@@ -18,9 +17,9 @@ object Creator {
         return MoviesInteractorImpl(getMoviesRepository(context))
     }
 
-    fun provideMoviesSearchPresenter( context: Context ): MoviesSearchPresenter {
-        return MoviesSearchPresenter(context)
-    }
+//    fun provideMoviesSearchPresenter( context: Context ): MoviesSearchViewModel {
+//        return MoviesSearchViewModel(context)
+//    }
 
     fun providePosterPresenter(posterView: PosterView): PosterPresenter {
         return PosterPresenter(posterView,)

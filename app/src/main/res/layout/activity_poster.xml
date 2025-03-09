@@ -16,4 +16,14 @@
         app:layout_constraintStart_toStartOf="parent"
         />
 
+    <ImageView
+        android:id="@+id/inFavoriteToggle"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:importantForAccessibility="no"
+        android:src="@android:drawable/btn_star_big_on"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

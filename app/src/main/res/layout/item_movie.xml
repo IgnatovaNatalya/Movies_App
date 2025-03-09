@@ -39,6 +39,15 @@
             android:layout_height="wrap_content"
             tools:text="1995 Pierce Brosnan, Sean Bean"/>
 
+        <ImageView
+            android:id="@+id/inFavoriteToggle"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:importantForAccessibility="no"
+            android:src="@android:drawable/btn_star_big_off"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
     </LinearLayout>
 
 </LinearLayout>

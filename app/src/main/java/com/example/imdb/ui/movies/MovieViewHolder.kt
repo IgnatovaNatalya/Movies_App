@@ -1,32 +1,35 @@
 package com.example.imdb.ui.movies
 
-import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
+import android.graphics.drawable.Drawable
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.example.imdb.domain.models.Movie
 import com.example.imdb.R
+import com.example.imdb.databinding.ItemMovieBinding
+import com.example.imdb.domain.models.Movie
 
-class MovieViewHolder  (itemView: View): RecyclerView.ViewHolder(itemView) {
-
-    private val tfTitle: TextView = itemView.findViewById(R.id.title)
-    private val ivCover:ImageView = itemView.findViewById(R.id.cover)
-    private val tfDesc:TextView =  itemView.findViewById(R.id.description)
+class MovieViewHolder(private val binding: ItemMovieBinding) :
+    RecyclerView.ViewHolder(binding.root) {
 
     fun bind(movie: Movie) {
-        tfTitle.text = movie.title
-        tfDesc.text = movie.description
+        binding.title.text = movie.title
+        binding.description.text = movie.description
 
-        Glide.with(itemView)
+        Glide.with(binding.root)
             .load(movie.image)
-            //.apply(RequestOptions().override(150, 300))
             .placeholder(R.drawable.cover_blank)
-            //.into(ivCover)
-
-            .centerCrop()
+            .centerInside()
+            //.centerCrop()
             .transform(RoundedCorners(20))
-            .into(ivCover)
+            .into(binding.cover)
+
+        binding.inFavoriteToggle.setImageDrawable(getFavoriteToggleDrawable(movie.inFavorite))
     }
+
+    private fun getFavoriteToggleDrawable(inFavorite: Boolean): Drawable? {
+        return itemView.context.getDrawable(
+            if(inFavorite) R.drawable.star_on else R.drawable.star_off
+        )
+    }
+
 }

@@ -21,7 +21,7 @@ class MoviesRepositoryImpl(private val networkClient: NetworkClient) : MoviesRep
                 val foundMovies = (response as MovieSearchResponse).results
                 if ( foundMovies.isNotEmpty())  {
                     Resource.Success(foundMovies.map {
-                        Movie(it.id, it.resultType, it.image, it.title, it.description)
+                        Movie(it.id, it.resultType, it.image, it.title, it.description,false)
                     })
                 } else Resource.Error("Ничего не найдено")
             }

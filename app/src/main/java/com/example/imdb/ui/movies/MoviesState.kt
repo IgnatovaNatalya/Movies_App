@@ -2,20 +2,20 @@ package com.example.imdb.ui.movies
 
 import com.example.imdb.domain.models.Movie
 
-sealed interface SearchMoviesState {
+sealed interface MoviesState {
 
-    object Loading : SearchMoviesState
+    object Loading : MoviesState
 
     data class Content(
         val movies: List<Movie>
-    ) : SearchMoviesState
+    ) : MoviesState
 
     data class Error(
         val errorMessage: String
-    ) : SearchMoviesState
+    ) : MoviesState
 
     data class Empty(
         val message: String
-    ) : SearchMoviesState
+    ) : MoviesState
 
 }
