@@ -1,6 +1,6 @@
 [versions]
 agp = "8.9.0"
-kotlin = "1.9.25"
+kotlin = "2.0.0" #"1.9.25"
 coreKtx = "1.15.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -12,8 +12,8 @@ constraintlayout = "2.2.1"
 glide = "4.16.0"
 gson = "2.10.1"
 retrofit="2.11.0"
-
 moxy = '2.2.2'
+lifecycleViewmodelAndroid = "2.8.7"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -33,6 +33,7 @@ glide_compiler = { module = "com.github.bumptech.glide:compiler", version.ref = 
 moxy = { module = "com.github.moxy-community:moxy", version.ref = "moxy" }
 moxy_android = { module = "com.github.moxy-community:moxy-android", version.ref = "moxy" }
 moxy_compiler = { module = "com.github.moxy-community:moxy-compiler", version.ref = "moxy" }
+androidx-lifecycle-viewmodel-android = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-android", version.ref = "lifecycleViewmodelAndroid" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

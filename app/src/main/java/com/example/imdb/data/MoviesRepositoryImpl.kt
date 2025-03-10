@@ -6,7 +6,10 @@ import com.example.imdb.domain.api.MoviesRepository
 import com.example.imdb.domain.models.Movie
 import com.example.imdb.util.Resource
 
-class MoviesRepositoryImpl(private val networkClient: NetworkClient) : MoviesRepository {
+class MoviesRepositoryImpl(
+    private val networkClient: NetworkClient,
+    private val localStorage: LocalStorage
+) : MoviesRepository {
 
     override fun searchMovies(expression: String): Resource<List<Movie>> {
         val response = networkClient.doRequest(MovieSearchRequest(expression))
@@ -18,10 +21,14 @@ class MoviesRepositoryImpl(private val networkClient: NetworkClient) : MoviesRep
             }
 
             200 -> {
+                val stored = localStorage.getSavedFavorites()
                 val foundMovies = (response as MovieSearchResponse).results
-                if ( foundMovies.isNotEmpty())  {
+                if (foundMovies.isNotEmpty()) {
                     Resource.Success(foundMovies.map {
-                        Movie(it.id, it.resultType, it.image, it.title, it.description,false)
+                        Movie(it.id, it.image, it.title,
+                            it.description,
+                            stored.contains(it.id)
+                        )
                     })
                 } else Resource.Error("Ничего не найдено")
             }
@@ -30,5 +37,13 @@ class MoviesRepositoryImpl(private val networkClient: NetworkClient) : MoviesRep
                 Resource.Error("Ошибка сервера")
             }
         }
+    }
+
+    override fun addMovieToFavorites(movie: Movie) {
+        localStorage.addToFavorites(movie.id)
+    }
+
+    override fun removeMovieFromFavorites(movie: Movie) {
+        localStorage.removeFromFavorites(movie.id)
     }
 }

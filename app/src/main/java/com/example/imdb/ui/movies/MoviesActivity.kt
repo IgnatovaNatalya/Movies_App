@@ -26,9 +26,21 @@ class MoviesActivity : ComponentActivity() {
 
     companion object {
         const val CLICK_DEBOUNCE_DELAY = 1000L
+        const val EXTRA_POSTER = "poster"
+        const val EXTRA_INFAVORITE = "inFavorite"
+        const val EXTRA_MOVIE_ID = "movieId"
     }
 
-    private val adapter = MoviesAdapter { openPoster(it) }
+    private val adapter = MoviesAdapter(
+        object : MoviesAdapter.MovieClickListener {
+            override fun onMovieClick(movie: Movie) {
+                openPoster(movie)
+            }
+            override fun onFavoriteToggleClick(movie: Movie) {
+                viewModel.toggleFavorite(movie)
+            }
+        })
+
     private var isClickAllowed = true
     private val handler = Handler(Looper.getMainLooper())
     private var textWatcher: TextWatcher? = null
@@ -63,7 +75,8 @@ class MoviesActivity : ComponentActivity() {
             }
         }
 
-        binding.recyclerMovies.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        binding.recyclerMovies.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         binding.recyclerMovies.adapter = adapter
 
         textWatcher = object : TextWatcher {
@@ -92,7 +105,9 @@ class MoviesActivity : ComponentActivity() {
     private fun openPoster(movie: Movie) {
         if (clickDebounce()) {
             val intent = Intent(this, PosterActivity::class.java)
-            intent.putExtra("poster", movie.image)
+            intent.putExtra(EXTRA_POSTER, movie.image)
+            intent.putExtra(EXTRA_INFAVORITE, movie.inFavorite)
+            intent.putExtra(EXTRA_MOVIE_ID, movie.id)
             startActivity(intent)
         }
     }
@@ -141,4 +156,5 @@ class MoviesActivity : ComponentActivity() {
         super.onDestroy()
         binding.queryInput.removeTextChangedListener(textWatcher)
     }
+
 }

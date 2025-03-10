@@ -1,19 +1,23 @@
 package com.example.imdb.ui.poster
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
+import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.imdb.R
 import com.example.imdb.databinding.ActivityPosterBinding
-import com.example.imdb.presentation.poster.PosterView
-import com.example.imdb.util.Creator
+import com.example.imdb.domain.models.Movie
+import com.example.imdb.presentation.poster.PosterViewModel
+import com.example.imdb.ui.movies.MoviesActivity
 
-class PosterActivity : AppCompatActivity(), PosterView {
+class PosterActivity : ComponentActivity() {
 
     private lateinit var binding: ActivityPosterBinding
+    private lateinit var viewModel: PosterViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,27 +25,64 @@ class PosterActivity : AppCompatActivity(), PosterView {
 
         binding = ActivityPosterBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.poster_main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        val posterPresenter = Creator.providePosterPresenter(this)
-        posterPresenter.onCreate()
+        viewModel = ViewModelProvider(
+            this,
+            PosterViewModel.getViewModelFactory()
+        )[PosterViewModel::class.java]
+
+        val movieId = intent.getStringExtra(MoviesActivity.EXTRA_MOVIE_ID).toString()
+        val poster: String = intent.getStringExtra(MoviesActivity.EXTRA_POSTER).toString()
+        val inFav = intent.getBooleanExtra(MoviesActivity.EXTRA_INFAVORITE, false)
+
+        val movie = Movie(
+            image = poster,
+            id = movieId,
+            title = "",
+            description = "",
+            inFavorite = inFav
+        )
+
+        setImagePoster(poster)
+        setInFavorite(inFav)
+
+        viewModel.observeMovie().observe(this) {
+            render(it)
+        }
+
+        binding.inFavoriteToggle.setOnClickListener { onFavoriteToggleClick(movie) }
     }
 
-    override fun getPosterUrl(): String {
-        return intent.getStringExtra("poster").toString()
+    private fun render(movie: Movie) {
+        //setImagePoster(movie.image)
+        setInFavorite(movie.inFavorite)
     }
 
-    override fun setImagePoster(url: String) {
+    private fun setImagePoster(url: String) {
         Glide.with(this)
             .load(url)
             .placeholder(R.drawable.cover_blank)
-           // .centerCrop()
+            //.centerCrop()
             .fitCenter()
             .into(binding.poster)
+    }
+
+    private fun setInFavorite(favorite: Boolean) {
+        binding.inFavoriteToggle.setImageDrawable(getFavoriteToggleDrawable(favorite))
+    }
+
+    private fun getFavoriteToggleDrawable(inFavorite: Boolean): Drawable? {
+        return getDrawable(
+            if (inFavorite) R.drawable.star_on else R.drawable.star_off
+        )
+    }
+
+    fun onFavoriteToggleClick(movie: Movie) {
+        viewModel.toggleFavorite(movie)
     }
 }
