@@ -8,4 +8,5 @@ interface MoviesRepository {
 
     fun addMovieToFavorites(movie: Movie)
     fun removeMovieFromFavorites(movie: Movie)
+    fun getFavoritesMovies(): Set<String>
 }

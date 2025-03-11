@@ -36,30 +36,23 @@ class PosterActivity : ComponentActivity() {
             PosterViewModel.getViewModelFactory()
         )[PosterViewModel::class.java]
 
-        val movieId = intent.getStringExtra(MoviesActivity.EXTRA_MOVIE_ID).toString()
-        val poster: String = intent.getStringExtra(MoviesActivity.EXTRA_POSTER).toString()
-        val inFav = intent.getBooleanExtra(MoviesActivity.EXTRA_INFAVORITE, false)
-
         val movie = Movie(
-            image = poster,
-            id = movieId,
+            image = intent.getStringExtra(MoviesActivity.EXTRA_POSTER).toString(),
+            id = intent.getStringExtra(MoviesActivity.EXTRA_MOVIE_ID).toString(),
             title = "",
             description = "",
-            inFavorite = inFav
+            inFavorite = intent.getBooleanExtra(MoviesActivity.EXTRA_IN_FAVORITE, false)
         )
 
-        setImagePoster(poster)
-        setInFavorite(inFav)
+        viewModel.renderMovie(movie)
 
-        viewModel.observeMovie().observe(this) {
-            render(it)
-        }
+        viewModel.observeMovie().observe(this) { render(it) }
 
         binding.inFavoriteToggle.setOnClickListener { onFavoriteToggleClick(movie) }
     }
 
     private fun render(movie: Movie) {
-        //setImagePoster(movie.image)
+        setImagePoster(movie.image)
         setInFavorite(movie.inFavorite)
     }
 
@@ -67,7 +60,6 @@ class PosterActivity : ComponentActivity() {
         Glide.with(this)
             .load(url)
             .placeholder(R.drawable.cover_blank)
-            //.centerCrop()
             .fitCenter()
             .into(binding.poster)
     }

@@ -27,7 +27,7 @@ class MoviesActivity : ComponentActivity() {
     companion object {
         const val CLICK_DEBOUNCE_DELAY = 1000L
         const val EXTRA_POSTER = "poster"
-        const val EXTRA_INFAVORITE = "inFavorite"
+        const val EXTRA_IN_FAVORITE = "inFavorite"
         const val EXTRA_MOVIE_ID = "movieId"
     }
 
@@ -106,7 +106,7 @@ class MoviesActivity : ComponentActivity() {
         if (clickDebounce()) {
             val intent = Intent(this, PosterActivity::class.java)
             intent.putExtra(EXTRA_POSTER, movie.image)
-            intent.putExtra(EXTRA_INFAVORITE, movie.inFavorite)
+            intent.putExtra(EXTRA_IN_FAVORITE, movie.inFavorite)
             intent.putExtra(EXTRA_MOVIE_ID, movie.id)
             startActivity(intent)
         }
@@ -155,6 +155,11 @@ class MoviesActivity : ComponentActivity() {
     override fun onDestroy() {
         super.onDestroy()
         binding.queryInput.removeTextChangedListener(textWatcher)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.refreshFavoriteMovies()
     }
 
 }

@@ -23,16 +23,14 @@ class PosterViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
-
     private val movieLiveData = MutableLiveData<Movie>()
 
 
     fun observeMovie(): LiveData<Movie> = movieLiveData
 
-//    private fun renderMovie(movie:Movie) {
-//        movieLiveData.postValue(movie)
-//    }
-
+    fun renderMovie(movie:Movie) {
+        movieLiveData.postValue(movie)
+    }
 
     fun toggleFavorite(movie: Movie) {
         if (movie.inFavorite) {

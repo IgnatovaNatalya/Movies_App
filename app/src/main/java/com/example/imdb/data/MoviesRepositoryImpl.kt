@@ -46,4 +46,8 @@ class MoviesRepositoryImpl(
     override fun removeMovieFromFavorites(movie: Movie) {
         localStorage.removeFromFavorites(movie.id)
     }
+
+    override fun getFavoritesMovies(): Set<String> {
+        return localStorage.getSavedFavorites()
+    }
 }

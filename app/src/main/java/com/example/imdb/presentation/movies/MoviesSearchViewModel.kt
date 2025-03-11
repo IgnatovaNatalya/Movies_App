@@ -128,4 +128,14 @@ class MoviesSearchViewModel(application: Application) : AndroidViewModel(applica
             }
         }
     }
+    fun refreshFavoriteMovies() {
+        val currentState = stateLiveData.value
+        if (currentState is MoviesState.Content) {
+            val favoritesSet = moviesInteractor.getFavoritesMovies()
+            for (movie in currentState.movies) {
+                if (movie.id in favoritesSet) updateMovieContent( movie.id, movie.copy(inFavorite = true))
+                else updateMovieContent( movie.id,  movie.copy(inFavorite = false))
+            }
+        }
+    }
 }
