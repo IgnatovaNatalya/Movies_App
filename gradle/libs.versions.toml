@@ -12,8 +12,9 @@ constraintlayout = "2.2.1"
 glide = "4.16.0"
 gson = "2.10.1"
 retrofit="2.11.0"
-moxy = '2.2.2'
+#moxy = '2.2.2'
 lifecycleViewmodelAndroid = "2.8.7"
+koin = "3.3.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -30,10 +31,12 @@ retrofit_converter = {module = "com.squareup.retrofit2:converter-gson", version.
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 glide_compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "glide" }
 
-moxy = { module = "com.github.moxy-community:moxy", version.ref = "moxy" }
-moxy_android = { module = "com.github.moxy-community:moxy-android", version.ref = "moxy" }
-moxy_compiler = { module = "com.github.moxy-community:moxy-compiler", version.ref = "moxy" }
+#moxy = { module = "com.github.moxy-community:moxy", version.ref = "moxy" }
+#moxy_android = { module = "com.github.moxy-community:moxy-android", version.ref = "moxy" }
+#moxy_compiler = { module = "com.github.moxy-community:moxy-compiler", version.ref = "moxy" }
 androidx-lifecycle-viewmodel-android = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-android", version.ref = "lifecycleViewmodelAndroid" }
+
+koin = {module = "io.insert-koin:koin-android", version.ref ="koin"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

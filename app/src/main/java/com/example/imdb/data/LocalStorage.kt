@@ -1,6 +1,7 @@
 package com.example.imdb.data
 
 import android.content.SharedPreferences
+import androidx.core.content.edit
 
 class LocalStorage(private val sharedPreferences: SharedPreferences) {
     private companion object {
@@ -22,6 +23,6 @@ class LocalStorage(private val sharedPreferences: SharedPreferences) {
     private fun changeFavorites(movieId: String, remove: Boolean) {
         val mutableSet = getSavedFavorites().toMutableSet()
         val modified = if (remove) mutableSet.remove(movieId) else mutableSet.add(movieId)
-        if (modified) sharedPreferences.edit().putStringSet(FAVORITES_KEY, mutableSet).apply()
+        if (modified) sharedPreferences.edit() { putStringSet(FAVORITES_KEY, mutableSet) }
     }
 }
