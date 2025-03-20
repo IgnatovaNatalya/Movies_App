@@ -1,6 +1,7 @@
 package com.example.imdb.util
 
 import android.content.Context
+import android.content.SharedPreferences
 import com.example.imdb.data.LocalStorage
 import com.example.imdb.data.MoviesRepositoryImpl
 import com.example.imdb.data.network.ImdbApiService
@@ -12,12 +13,20 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object Creator {
 
+    private var sharedPrefs: SharedPreferences? = null
+
+    private fun getSharedPreferences(context: Context): SharedPreferences {
+        if (sharedPrefs == null)
+            sharedPrefs = context.getSharedPreferences("local_storage", Context.MODE_PRIVATE)
+        return sharedPrefs!!
+    }
+
     private fun getMoviesRepository(context: Context): MoviesRepository {
         return MoviesRepositoryImpl(getNetworkClient(context), getLocalStorage(context))
     }
 
     private fun getLocalStorage(context: Context): LocalStorage {
-        return LocalStorage(context.getSharedPreferences("local_storage", Context.MODE_PRIVATE))
+        return LocalStorage(getSharedPreferences(context))
     }
 
     private fun getNetworkClient(context: Context): RetrofitNetworkClient {
