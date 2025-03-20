@@ -11,10 +11,12 @@ import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.imdb.R
 import com.example.imdb.databinding.ActivityPosterBinding
+import com.example.imdb.domain.api.MoviesInteractor
 import com.example.imdb.domain.models.Movie
 import com.example.imdb.presentation.poster.PosterViewModel
 import com.example.imdb.ui.movies.MoviesActivity
-import com.example.imdb.util.Creator
+import org.koin.android.ext.android.inject
+import kotlin.getValue
 
 class PosterActivity : ComponentActivity() {
 
@@ -33,9 +35,11 @@ class PosterActivity : ComponentActivity() {
             insets
         }
 
+        val moviesInteractor : MoviesInteractor by inject()
+
         viewModel = ViewModelProvider(
             this,
-            PosterViewModel.getViewModelFactory(Creator.provideMoviesInteractor(this))
+            PosterViewModel.getViewModelFactory(moviesInteractor)
         )[PosterViewModel::class.java]
 
         val movie = Movie(

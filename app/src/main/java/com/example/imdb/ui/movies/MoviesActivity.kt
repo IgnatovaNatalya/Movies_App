@@ -2,6 +2,7 @@ package com.example.imdb.ui.movies
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import org.koin.android.ext.android.inject
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -17,10 +18,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.imdb.R
 import com.example.imdb.databinding.ActivityMainBinding
+import com.example.imdb.domain.api.MoviesInteractor
 import com.example.imdb.domain.models.Movie
 import com.example.imdb.presentation.movies.MoviesSearchViewModel
 import com.example.imdb.ui.poster.PosterActivity
-import com.example.imdb.util.Creator
 
 
 class MoviesActivity : ComponentActivity() {
@@ -60,9 +61,11 @@ class MoviesActivity : ComponentActivity() {
             insets
         }
 
+        val moviesInteractor : MoviesInteractor by inject()
+
         viewModel = ViewModelProvider(
             this,
-            MoviesSearchViewModel.getViewModelFactory(Creator.provideMoviesInteractor(this))
+            MoviesSearchViewModel.getViewModelFactory(moviesInteractor)
         )[MoviesSearchViewModel::class.java]
 
         viewModel.observeState().observe(this) { render(it) }
