@@ -7,16 +7,8 @@ import com.example.imdb.data.NetworkClient
 import com.example.imdb.data.dto.MovieSearchRequest
 import com.example.imdb.data.dto.Response
 
-class RetrofitNetworkClient(private val apiService: ImdbApiService, private val context: Context) : NetworkClient {
-
-//    private val BASE_URL = "https://tv-api.com"
-//
-//    private val retrofit = Retrofit.Builder()
-//        .baseUrl(BASE_URL)
-//        .addConverterFactory(GsonConverterFactory.create())
-//        .build()
-//
-//    private val apiService = retrofit.create(ImdbApiService::class.java)
+class RetrofitNetworkClient(private val context: Context, private val apiService: ImdbApiService) :
+    NetworkClient {
 
     override fun doRequest(dto: Any): Response {
         if (!isConnected()) {

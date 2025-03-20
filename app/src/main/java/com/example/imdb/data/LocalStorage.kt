@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 
 class LocalStorage(private val sharedPreferences: SharedPreferences) {
+
     private companion object {
         const val FAVORITES_KEY = "FAVORITES_KEY"
     }

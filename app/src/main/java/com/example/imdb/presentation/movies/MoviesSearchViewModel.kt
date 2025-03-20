@@ -17,22 +17,31 @@ import com.example.imdb.domain.api.MoviesInteractor
 import com.example.imdb.domain.models.Movie
 import com.example.imdb.ui.movies.MoviesState
 import com.example.imdb.ui.movies.ToastState
-import com.example.imdb.util.Creator
 
-class MoviesSearchViewModel(application: Application) : AndroidViewModel(application) {
+class MoviesSearchViewModel(
+    private val moviesInteractor: MoviesInteractor,
+    application: Application
+) : AndroidViewModel(application) {
 
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
         private val SEARCH_REQUEST_TOKEN = Any()
 
-        fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                MoviesSearchViewModel(this[APPLICATION_KEY] as Application)
+        //
+//        fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
+//            initializer {
+//                MoviesSearchViewModel(this[APPLICATION_KEY] as Application)
+//            }
+//        }
+        fun getViewModelFactory(moviesInteractor: MoviesInteractor): ViewModelProvider.Factory =
+            viewModelFactory {
+                initializer {
+                    MoviesSearchViewModel(moviesInteractor, this[APPLICATION_KEY] as Application)
+                }
             }
-        }
     }
 
-    private var moviesInteractor = Creator.provideMoviesInteractor(getApplication())
+    // private var moviesInteractor = Creator.provideMoviesInteractor(getApplication())
     private val handler = Handler(Looper.getMainLooper())
 
     private val stateLiveData = MutableLiveData<MoviesState>()
@@ -72,23 +81,23 @@ class MoviesSearchViewModel(application: Application) : AndroidViewModel(applica
         if (newQueryText.isNotEmpty()) {
             renderState(MoviesState.Loading)
             moviesInteractor.searchMovies(newQueryText, object : MoviesInteractor.MoviesConsumer {
-                    override fun consume(foundMovies: List<Movie>?, errorMessage: String?) {
+                override fun consume(foundMovies: List<Movie>?, errorMessage: String?) {
 
-                        if (foundMovies != null) {
-                            if (foundMovies.isNotEmpty())
-                                renderState(MoviesState.Content(foundMovies))
-                            else if (errorMessage != null)
-                                renderState(MoviesState.Empty(errorMessage.toString()))
-                        } else {
-                            renderState(
-                                MoviesState.Error(
-                                    getApplication<Application>().getString(R.string.something_went_wrong)
-                                )
+                    if (foundMovies != null) {
+                        if (foundMovies.isNotEmpty())
+                            renderState(MoviesState.Content(foundMovies))
+                        else if (errorMessage != null)
+                            renderState(MoviesState.Empty(errorMessage.toString()))
+                    } else {
+                        renderState(
+                            MoviesState.Error(
+                                getApplication<Application>().getString(R.string.something_went_wrong)
                             )
-                            showToast(ToastState.Show(errorMessage.toString()))
-                        }
+                        )
+                        showToast(ToastState.Show(errorMessage.toString()))
                     }
-                })
+                }
+            })
         }
     }
 
@@ -128,13 +137,17 @@ class MoviesSearchViewModel(application: Application) : AndroidViewModel(applica
             }
         }
     }
+
     fun refreshFavoriteMovies() {
         val currentState = stateLiveData.value
         if (currentState is MoviesState.Content) {
             val favoritesSet = moviesInteractor.getFavoritesMovies()
             for (movie in currentState.movies) {
-                if (movie.id in favoritesSet) updateMovieContent( movie.id, movie.copy(inFavorite = true))
-                else updateMovieContent( movie.id,  movie.copy(inFavorite = false))
+                if (movie.id in favoritesSet) updateMovieContent(
+                    movie.id,
+                    movie.copy(inFavorite = true)
+                )
+                else updateMovieContent(movie.id, movie.copy(inFavorite = false))
             }
         }
     }

@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
@@ -13,6 +14,7 @@ import com.example.imdb.databinding.ActivityPosterBinding
 import com.example.imdb.domain.models.Movie
 import com.example.imdb.presentation.poster.PosterViewModel
 import com.example.imdb.ui.movies.MoviesActivity
+import com.example.imdb.util.Creator
 
 class PosterActivity : ComponentActivity() {
 
@@ -33,7 +35,7 @@ class PosterActivity : ComponentActivity() {
 
         viewModel = ViewModelProvider(
             this,
-            PosterViewModel.getViewModelFactory()
+            PosterViewModel.getViewModelFactory(Creator.provideMoviesInteractor(this))
         )[PosterViewModel::class.java]
 
         val movie = Movie(
@@ -69,7 +71,8 @@ class PosterActivity : ComponentActivity() {
     }
 
     private fun getFavoriteToggleDrawable(inFavorite: Boolean): Drawable? {
-        return getDrawable(
+        return AppCompatResources.getDrawable(
+            this,
             if (inFavorite) R.drawable.star_on else R.drawable.star_off
         )
     }

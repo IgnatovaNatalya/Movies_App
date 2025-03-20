@@ -20,6 +20,7 @@ import com.example.imdb.databinding.ActivityMainBinding
 import com.example.imdb.domain.models.Movie
 import com.example.imdb.presentation.movies.MoviesSearchViewModel
 import com.example.imdb.ui.poster.PosterActivity
+import com.example.imdb.util.Creator
 
 
 class MoviesActivity : ComponentActivity() {
@@ -61,12 +62,10 @@ class MoviesActivity : ComponentActivity() {
 
         viewModel = ViewModelProvider(
             this,
-            MoviesSearchViewModel.getViewModelFactory()
+            MoviesSearchViewModel.getViewModelFactory(Creator.provideMoviesInteractor(this))
         )[MoviesSearchViewModel::class.java]
 
-        viewModel.observeState().observe(this) {
-            render(it)
-        }
+        viewModel.observeState().observe(this) { render(it) }
 
         viewModel.observeToastState().observe(this) { toastState ->
             if (toastState is ToastState.Show) {
@@ -161,5 +160,4 @@ class MoviesActivity : ComponentActivity() {
         super.onResume()
         viewModel.refreshFavoriteMovies()
     }
-
 }
