@@ -2,7 +2,6 @@ package com.example.imdb.ui.movies
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import org.koin.android.ext.android.inject
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -14,14 +13,13 @@ import androidx.activity.ComponentActivity
 import androidx.activity.enableEdgeToEdge
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.imdb.R
 import com.example.imdb.databinding.ActivityMainBinding
-import com.example.imdb.domain.api.MoviesInteractor
 import com.example.imdb.domain.models.Movie
 import com.example.imdb.presentation.movies.MoviesSearchViewModel
 import com.example.imdb.ui.poster.PosterActivity
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class MoviesActivity : ComponentActivity() {
@@ -47,7 +45,8 @@ class MoviesActivity : ComponentActivity() {
     private val handler = Handler(Looper.getMainLooper())
     private var textWatcher: TextWatcher? = null
     private lateinit var binding: ActivityMainBinding
-    private lateinit var viewModel: MoviesSearchViewModel
+    //private lateinit var viewModel: MoviesSearchViewModel
+    private val viewModel: MoviesSearchViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,13 +59,6 @@ class MoviesActivity : ComponentActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
-        val moviesInteractor : MoviesInteractor by inject()
-
-        viewModel = ViewModelProvider(
-            this,
-            MoviesSearchViewModel.getViewModelFactory(moviesInteractor)
-        )[MoviesSearchViewModel::class.java]
 
         viewModel.observeState().observe(this) { render(it) }
 

@@ -1,17 +1,13 @@
 package com.example.imdb.presentation.movies
 
-import android.app.Application
+import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
+import androidx.lifecycle.ViewModel
 import com.example.imdb.R
 import com.example.imdb.domain.api.MoviesInteractor
 import com.example.imdb.domain.models.Movie
@@ -20,19 +16,12 @@ import com.example.imdb.ui.movies.ToastState
 
 class MoviesSearchViewModel(
     private val moviesInteractor: MoviesInteractor,
-    application: Application
-) : AndroidViewModel(application) {
+    private val context: Context
+) : ViewModel() {
 
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
         private val SEARCH_REQUEST_TOKEN = Any()
-
-        fun getViewModelFactory(moviesInteractor: MoviesInteractor): ViewModelProvider.Factory =
-            viewModelFactory {
-                initializer {
-                    MoviesSearchViewModel(moviesInteractor, this[APPLICATION_KEY] as Application)
-                }
-            }
     }
 
     private val handler = Handler(Looper.getMainLooper())
@@ -84,7 +73,8 @@ class MoviesSearchViewModel(
                     } else {
                         renderState(
                             MoviesState.Error(
-                                getApplication<Application>().getString(R.string.something_went_wrong)
+                                //getApplication<Application>().getString(R.string.something_went_wrong)
+                                context.getString(R.string.something_went_wrong)
                             )
                         )
                         showToast(ToastState.Show(errorMessage.toString()))

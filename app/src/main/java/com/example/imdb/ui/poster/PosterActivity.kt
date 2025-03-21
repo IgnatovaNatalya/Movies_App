@@ -7,21 +7,19 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.imdb.R
 import com.example.imdb.databinding.ActivityPosterBinding
-import com.example.imdb.domain.api.MoviesInteractor
 import com.example.imdb.domain.models.Movie
 import com.example.imdb.presentation.poster.PosterViewModel
 import com.example.imdb.ui.movies.MoviesActivity
-import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.getValue
 
 class PosterActivity : ComponentActivity() {
 
     private lateinit var binding: ActivityPosterBinding
-    private lateinit var viewModel: PosterViewModel
+    private val viewModel: PosterViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,13 +32,6 @@ class PosterActivity : ComponentActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
-        val moviesInteractor : MoviesInteractor by inject()
-
-        viewModel = ViewModelProvider(
-            this,
-            PosterViewModel.getViewModelFactory(moviesInteractor)
-        )[PosterViewModel::class.java]
 
         val movie = Movie(
             image = intent.getStringExtra(MoviesActivity.EXTRA_POSTER).toString(),

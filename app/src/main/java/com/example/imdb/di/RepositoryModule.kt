@@ -9,8 +9,11 @@ import com.example.imdb.data.network.RetrofitNetworkClient
 import com.example.imdb.domain.api.MoviesInteractor
 import com.example.imdb.domain.api.MoviesRepository
 import com.example.imdb.domain.impl.MoviesInteractorImpl
+import com.example.imdb.presentation.movies.MoviesSearchViewModel
+import com.example.imdb.presentation.poster.PosterViewModel
 import com.google.gson.Gson
 import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -35,11 +38,6 @@ val repositoryModule = module {
             .create(ImdbApiService::class.java)
     }
 
-//    single {
-//        androidContext()
-//            .getSharedPreferences("local_storage", Context.MODE_PRIVATE)
-//    }
-
     factory { Gson() }
 
     single { LocalStorage(get()) }
@@ -48,10 +46,8 @@ val repositoryModule = module {
     single<MoviesInteractor> { MoviesInteractorImpl(get()) }
 
     //viewmodel
-//    viewModel {
-//        MoviesSearchViewModel(
-//            moviesInteractor = get(),
-//            application =
-//        )
-//    }
+    viewModel { MoviesSearchViewModel(get(), androidContext()) }
+
+    viewModel { PosterViewModel(get()) }
+
 }
