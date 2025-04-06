@@ -18,7 +18,7 @@ import com.example.imdb.R
 import com.example.imdb.databinding.ActivityMainBinding
 import com.example.imdb.domain.models.Movie
 import com.example.imdb.presentation.movies.MoviesSearchViewModel
-import com.example.imdb.ui.poster.PosterActivity
+import com.example.imdb.ui.details.DetailsActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
@@ -45,7 +45,6 @@ class MoviesActivity : ComponentActivity() {
     private val handler = Handler(Looper.getMainLooper())
     private var textWatcher: TextWatcher? = null
     private lateinit var binding: ActivityMainBinding
-    //private lateinit var viewModel: MoviesSearchViewModel
     private val viewModel: MoviesSearchViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -98,7 +97,7 @@ class MoviesActivity : ComponentActivity() {
 
     private fun openPoster(movie: Movie) {
         if (clickDebounce()) {
-            val intent = Intent(this, PosterActivity::class.java)
+            val intent = Intent(this, DetailsActivity::class.java)
             intent.putExtra(EXTRA_POSTER, movie.image)
             intent.putExtra(EXTRA_IN_FAVORITE, movie.inFavorite)
             intent.putExtra(EXTRA_MOVIE_ID, movie.id)
