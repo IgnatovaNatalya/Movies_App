@@ -9,14 +9,29 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import com.example.imdb.R
 import com.example.imdb.databinding.FragmentAboutBinding
-import com.example.imdb.domain.models.Movie
-import com.example.imdb.presentation.poster.DetailsViewModel
-import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import com.example.imdb.domain.models.MovieDetails
+import com.example.imdb.presentation.details.AboutViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import kotlin.getValue
 
 class AboutFragment : Fragment() {
 
-    val viewModel by activityViewModel<DetailsViewModel>()
+    companion object {
+        const val MOVIE_ID = "MOVIE_ID"
+
+        fun newInstance(movieId: String) = AboutFragment().apply {
+            arguments = Bundle().apply {
+                putString(MOVIE_ID, movieId)
+            }
+        }
+    }
+
+    // https://tv-api.com/en/API/Title/k_zcuw1ytf/tt0120737
+
+    private val viewModel: AboutViewModel by viewModel {
+        parametersOf(requireArguments().getString(MOVIE_ID))
+    }
 
     private lateinit var binding: FragmentAboutBinding
 
@@ -31,21 +46,61 @@ class AboutFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.currentMovie.observe(viewLifecycleOwner) { renderAbout(it) }
+        viewModel.movieDetailsState.observe(viewLifecycleOwner) { renderAbout(it) }
         binding.inFavoriteToggle.setOnClickListener { onFavoriteToggleClick() }
     }
 
-    private fun renderAbout(movie: Movie) {
-        setTitle(movie.title)
-        setYear(movie.description)
-        setInFavorite(movie.inFavorite)
+    private fun renderAbout(state: MovieDetailsState) {
+        when (state) {
+            is MovieDetailsState.Content -> showMovieDetails(state.movieDetails)
+            is MovieDetailsState.Error -> showError(state.errorMessage)
+            is MovieDetailsState.Loading -> showLoading()
+        }
     }
 
-    private fun setTitle (title:String) {
-        binding.title.text = title
+    private fun showMovieDetails(movieDetails: MovieDetails) {
+        showElements(View.VISIBLE)
+
+        binding.title.text = movieDetails.title
+        binding.rating.text = movieDetails.imDbRating
+        binding.year.text = movieDetails.year
+        binding.country.text = movieDetails.countries
+        binding.genre.text = movieDetails.genres
+        binding.director.text = movieDetails.directors
+        binding.writer.text = movieDetails.writers
+        binding.stars.text = movieDetails.stars
+        binding.plot.text = movieDetails.plot
+
+        setInFavorite(movieDetails.inFavorite)
     }
-    private fun setYear(year:String) {
-        binding.year.text = year
+    private fun showLoading() {
+
+        showElements(View.GONE)
+
+        binding.placeholderMessage.visibility = View.GONE
+        binding.progressBar.visibility = View.VISIBLE
+    }
+
+    private fun showError(errorMessage: String) {
+        showElements(View.GONE)
+
+        binding.placeholderMessage.visibility = View.VISIBLE
+        binding.placeholderMessage.text = errorMessage
+
+        binding.progressBar.visibility = View.GONE
+    }
+
+    private fun showElements(visibility:Int) {
+        binding.title.visibility = visibility
+        binding.rating.visibility = visibility
+        binding.year.visibility = visibility
+        binding.country.visibility = visibility
+        binding.genre.visibility = visibility
+        binding.director.visibility = visibility
+        binding.writer.visibility = visibility
+        binding.stars.visibility = visibility
+        binding.plot.visibility = visibility
+        binding.inFavoriteToggle.visibility = visibility
     }
 
     private fun setInFavorite(favorite: Boolean) {
@@ -60,7 +115,7 @@ class AboutFragment : Fragment() {
     }
 
     fun onFavoriteToggleClick() {
-        viewModel.toggleFavoriteCurrentMovie()
+        //viewModel.toggleFavoriteCurrentMovie()
     }
 
 }

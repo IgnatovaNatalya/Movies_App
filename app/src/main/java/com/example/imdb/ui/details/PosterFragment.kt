@@ -1,24 +1,34 @@
 package com.example.imdb.ui.details
 
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.example.imdb.R
 import com.example.imdb.databinding.FragmentPosterBinding
-import com.example.imdb.domain.models.Movie
-import com.example.imdb.presentation.poster.DetailsViewModel
-import org.koin.androidx.viewmodel.ext.android.activityViewModel
-import kotlin.getValue
+import com.example.imdb.presentation.details.PosterViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 class PosterFragment : Fragment() {
 
+    companion object {
+        const val POSTER_URL = "POSTER_URL"
 
-    val viewModel by activityViewModel<DetailsViewModel>()
+        fun newInstance(url: String) = PosterFragment().apply {
+            arguments = Bundle().apply {
+                putString(POSTER_URL, url)
+            }
+        }
+    }
+
+    //val viewModel by activityViewModel<DetailsViewModel>()
+
+    private val viewModel: PosterViewModel by viewModel {
+        parametersOf(requireArguments().getString(POSTER_URL))
+    }
 
     private lateinit var binding: FragmentPosterBinding
 
@@ -33,40 +43,39 @@ class PosterFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.currentMovie.observe(viewLifecycleOwner) { render(it) }
-        binding.inFavoriteToggle.setOnClickListener { onFavoriteToggleClick() }
+        viewModel.posterLiveData.observe(viewLifecycleOwner) { render(it) }
+        //binding.inFavoriteToggle.setOnClickListener { onFavoriteToggleClick() }
     }
 
-    private fun render(movie: Movie) {
-        setImagePoster(movie.image)
-        setInFavorite(movie.inFavorite)
+    private fun render(posterUrl: String?) {
+        if (posterUrl != null) setImagePoster(posterUrl)
     }
 
     private fun setImagePoster(url: String) {
         Glide.with(this)
             .load(url)
             .placeholder(R.drawable.cover_blank)
-            .fitCenter()
+            .centerCrop()
             .into(binding.poster)
     }
 
-    private fun setInFavorite(favorite: Boolean) {
-        binding.inFavoriteToggle.setImageDrawable(getFavoriteToggleDrawable(favorite))
-    }
-
-    private fun getFavoriteToggleDrawable(inFavorite: Boolean): Drawable? {
-        return AppCompatResources.getDrawable(
-            requireActivity(),
-            if (inFavorite) R.drawable.star_on else R.drawable.star_off
-        )
-    }
+//    private fun setInFavorite(favorite: Boolean) {
+//        binding.inFavoriteToggle.setImageDrawable(getFavoriteToggleDrawable(favorite))
+//    }
+//
+//    private fun getFavoriteToggleDrawable(inFavorite: Boolean): Drawable? {
+//        return AppCompatResources.getDrawable(
+//            requireActivity(),
+//            if (inFavorite) R.drawable.star_on else R.drawable.star_off
+//        )
+//    }
 
 //    fun onFavoriteToggleClick(movie: Movie) {
 //        viewModel.toggleFavorite(movie)
 //    }
 
-    fun onFavoriteToggleClick() {
-        viewModel.toggleFavoriteCurrentMovie()
-    }
+//    fun onFavoriteToggleClick() {
+//        viewModel.toggleFavoriteCurrentMovie()
+//    }
 
 }

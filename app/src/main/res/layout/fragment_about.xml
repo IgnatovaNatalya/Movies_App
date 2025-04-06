@@ -6,6 +6,31 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:layout_marginTop="150dp"
+        android:indeterminateTint="@color/black"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/placeholderMessage"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="150dp"
+        android:textColor="@color/black"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
     <TextView
         android:id="@+id/title"
         android:layout_width="match_parent"
@@ -13,15 +38,32 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:textSize="36sp"
+        android:layout_marginVertical="20dp"
         tools:text="Название фильма" />
 
     <TextView
-        android:id="@+id/year_text"
+        android:id="@+id/rating_text"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="Рейтинг IMDB: "
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title" />
+
+    <TextView
+        android:id="@+id/rating"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@+id/rating_text"
+        app:layout_constraintTop_toTopOf="@+id/rating_text"
+        tools:text="8.7" />
+
+    <TextView
+        android:id="@+id/year_text"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:text="Год выпуска: "
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title" />
+        app:layout_constraintTop_toBottomOf="@+id/rating_text" />
 
     <TextView
         android:id="@+id/year"
@@ -29,9 +71,108 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toEndOf="@+id/year_text"
         app:layout_constraintTop_toTopOf="@+id/year_text"
-        tools:text="2001"
+        tools:text="2001" />
 
+    <TextView
+        android:id="@+id/country_text"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="Страна: "
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/year_text" />
+
+    <TextView
+        android:id="@+id/country"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@+id/country_text"
+        app:layout_constraintTop_toTopOf="@+id/country_text"
+        tools:text="Россия" />
+
+    <TextView
+        android:id="@+id/genre_text"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="Жанр: "
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/country_text" />
+
+    <TextView
+        android:id="@+id/genre"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@+id/genre_text"
+        app:layout_constraintTop_toTopOf="@+id/genre_text"
+        tools:text="Драма" />
+
+    <TextView
+        android:id="@+id/director_text"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="Режиссер: "
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/genre_text" />
+
+    <TextView
+        android:id="@+id/director"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@+id/director_text"
+        app:layout_constraintTop_toTopOf="@+id/director_text"
+        tools:text="С. Михалков" />
+
+    <TextView
+        android:id="@+id/writer_text"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="Сценарист: "
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/director_text" />
+
+    <TextView
+        android:id="@+id/writer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@+id/writer_text"
+        app:layout_constraintTop_toTopOf="@+id/writer_text"
+        tools:text="Б. Рождественский"
         />
+
+    <TextView
+        android:id="@+id/stars_text"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="В ролях: "
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/writer_text" />
+
+    <TextView
+        android:id="@+id/stars"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@+id/stars_text"
+        app:layout_constraintTop_toTopOf="@+id/stars_text"
+        tools:text="Стив Джобс" />
+
+    <TextView
+        android:id="@+id/plot_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="20dp"
+        android:textSize="16dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/stars_text"
+        tools:text="Сюжет:" />
+
+    <TextView
+        android:id="@+id/plot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/plot_text"
+        tools:text="В одной далекой-далекой галатике ..." />
+
 
     <ImageView
         android:id="@+id/inFavoriteToggle"

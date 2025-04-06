@@ -97,10 +97,11 @@ class MoviesSearchViewModel(
     }
 
     fun toggleFavorite(movie: Movie) {
+
         if (movie.inFavorite) {
-            moviesInteractor.removeMovieFromFavorites(movie)
+            moviesInteractor.removeMovieFromFavorites(movie.id)
         } else {
-            moviesInteractor.addMovieToFavorites(movie)
+            moviesInteractor.addMovieToFavorites(movie.id)
         }
         updateMovieContent(movie.id, movie.copy(inFavorite = !movie.inFavorite))
     }

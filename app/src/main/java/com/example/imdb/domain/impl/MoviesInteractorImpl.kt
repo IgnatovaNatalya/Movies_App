@@ -2,7 +2,6 @@ package com.example.imdb.domain.impl
 
 import com.example.imdb.domain.api.MoviesInteractor
 import com.example.imdb.domain.api.MoviesRepository
-import com.example.imdb.domain.models.Movie
 import com.example.imdb.util.Resource
 import java.util.concurrent.Executors
 
@@ -25,12 +24,29 @@ class MoviesInteractorImpl(private val repository: MoviesRepository) : MoviesInt
         }
     }
 
-    override fun addMovieToFavorites(movie: Movie) {
-        repository.addMovieToFavorites(movie)
+    override fun searchMovieDetails(
+        movieId: String,
+        consumer: MoviesInteractor.MovieDetailsConsumer
+    ) {
+        executor.execute {
+            when (val resource = repository.searchMovieDetails(movieId)) {
+                is Resource.Success -> {
+                    consumer.consume(resource.data, null)
+                }
+
+                is Resource.Error -> {
+                    consumer.consume(null, resource.message)
+                }
+            }
+        }
     }
 
-    override fun removeMovieFromFavorites(movie: Movie) {
-        repository.removeMovieFromFavorites(movie)
+    override fun addMovieToFavorites(movieId:String) {
+        repository.addMovieToFavorites(movieId)
+    }
+
+    override fun removeMovieFromFavorites(movieId:String) {
+        repository.removeMovieFromFavorites(movieId)
     }
 
     override fun getFavoritesMovies(): Set<String> {

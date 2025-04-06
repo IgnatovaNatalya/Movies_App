@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import com.example.imdb.data.NetworkClient
+import com.example.imdb.data.dto.MovieDetailsRequest
 import com.example.imdb.data.dto.MovieSearchRequest
 import com.example.imdb.data.dto.Response
 
@@ -16,6 +17,10 @@ class RetrofitNetworkClient(private val context: Context, private val apiService
         }
         if (dto is MovieSearchRequest) {
             val resp = apiService.getMovies(dto.expression).execute()
+            val body = resp.body() ?: Response()
+            return body.apply { resultCode = resp.code() }
+        } else if (dto is MovieDetailsRequest) {
+            val resp = apiService.getMovieDetails(dto.movieId).execute()
             val body = resp.body() ?: Response()
             return body.apply { resultCode = resp.code() }
         } else {
