@@ -1,10 +1,15 @@
 package com.example.imdb.data.dto
 
-import com.example.imdb.domain.models.MovieDetails
-
-
 class MovieDetailsResponse(
-    val searchType: String,
-    val expression: String,
-    val results: MovieDetails
+    val id: String,
+    val title: String,
+    val imDbRating: String,
+    val year: String,
+    val countries: String,
+    val genres: String,
+    val directors: String,
+    val writers: String,
+    val stars: String,
+    val plot: String
 ) : Response()
+

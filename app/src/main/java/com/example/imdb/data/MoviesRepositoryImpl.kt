@@ -51,21 +51,20 @@ class MoviesRepositoryImpl(
             }
             200 -> {
                 val stored = localStorage.getSavedFavorites()
-                val movieDetails = (response as MovieDetailsResponse).results
-//                Resource.Success(MovieDetails(
-//                    id = movieDetails.id,
-//                    title = movieDetails.title,
-//                    imDbRating = movieDetails.imDbRating,
-//                    year = movieDetails.year,
-//                    countries = movieDetails.countries,
-//                    genres = movieDetails.genres,
-//                    directors = movieDetails.directors,
-//                    writers = movieDetails.writers,
-//                    stars = movieDetails.stars,
-//                    plot = movieDetails.plot,
-//                    inFavorite = stored.contains(movieDetails.id)
-//                ))
-                Resource.Success(movieDetails)
+                val movieDetResponse = (response as MovieDetailsResponse)
+
+                return Resource.Success(MovieDetails(
+                    id = movieDetResponse.id,
+                    title = movieDetResponse.title,
+                    imDbRating = movieDetResponse.imDbRating,
+                    year = movieDetResponse.year,
+                    countries = movieDetResponse.countries,
+                    genres = movieDetResponse.genres,
+                    directors = movieDetResponse.directors,
+                    writers = movieDetResponse.writers,
+                    stars = movieDetResponse.stars,
+                    plot = movieDetResponse.plot,
+                    inFavorite =  stored.contains(movieDetResponse.id)))
             }
             else -> {
                 Resource.Error("Ошибка сервера")

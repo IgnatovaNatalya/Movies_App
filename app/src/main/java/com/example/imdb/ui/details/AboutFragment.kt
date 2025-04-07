@@ -27,8 +27,6 @@ class AboutFragment : Fragment() {
         }
     }
 
-    // https://tv-api.com/en/API/Title/k_zcuw1ytf/tt0120737
-
     private val viewModel: AboutViewModel by viewModel {
         parametersOf(requireArguments().getString(MOVIE_ID))
     }
@@ -52,13 +50,13 @@ class AboutFragment : Fragment() {
 
     private fun renderAbout(state: MovieDetailsState) {
         when (state) {
-            is MovieDetailsState.Content -> showMovieDetails(state.movieDetails)
+            is MovieDetailsState.Content -> showContent(state.movieDetails)
             is MovieDetailsState.Error -> showError(state.errorMessage)
             is MovieDetailsState.Loading -> showLoading()
         }
     }
 
-    private fun showMovieDetails(movieDetails: MovieDetails) {
+    private fun showContent(movieDetails: MovieDetails) {
         showElements(View.VISIBLE)
 
         binding.title.text = movieDetails.title
@@ -72,9 +70,11 @@ class AboutFragment : Fragment() {
         binding.plot.text = movieDetails.plot
 
         setInFavorite(movieDetails.inFavorite)
+
+        binding.progressBar.visibility = View.GONE
+        binding.placeholderMessage.visibility = View.GONE
     }
     private fun showLoading() {
-
         showElements(View.GONE)
 
         binding.placeholderMessage.visibility = View.GONE
@@ -83,10 +83,8 @@ class AboutFragment : Fragment() {
 
     private fun showError(errorMessage: String) {
         showElements(View.GONE)
-
         binding.placeholderMessage.visibility = View.VISIBLE
         binding.placeholderMessage.text = errorMessage
-
         binding.progressBar.visibility = View.GONE
     }
 
@@ -101,6 +99,15 @@ class AboutFragment : Fragment() {
         binding.stars.visibility = visibility
         binding.plot.visibility = visibility
         binding.inFavoriteToggle.visibility = visibility
+
+        binding.ratingText.visibility = visibility
+        binding.yearText.visibility = visibility
+        binding.countryText.visibility = visibility
+        binding.genreText.visibility = visibility
+        binding.directorText.visibility = visibility
+        binding.writerText.visibility = visibility
+        binding.starsText.visibility = visibility
+        binding.plotText.visibility = visibility
     }
 
     private fun setInFavorite(favorite: Boolean) {
@@ -115,7 +122,6 @@ class AboutFragment : Fragment() {
     }
 
     fun onFavoriteToggleClick() {
-        //viewModel.toggleFavoriteCurrentMovie()
+        viewModel.toggleFavoriteCurrentMovie()
     }
-
 }

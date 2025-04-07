@@ -8,33 +8,38 @@ import com.example.imdb.domain.models.MovieDetails
 import com.example.imdb.ui.details.MovieDetailsState
 import com.example.imdb.ui.movies.ToastState
 
-class AboutViewModel(private val movieId: String,
-                     private val moviesInteractor: MoviesInteractor, ) : ViewModel() {
+class AboutViewModel(
+    private val movieId: String,
+    private val moviesInteractor: MoviesInteractor,
+) : ViewModel() {
 
     private val _stateLiveData = MutableLiveData<MovieDetailsState>()
     val movieDetailsState: LiveData<MovieDetailsState> = _stateLiveData
 
     private val _toastState = MutableLiveData<ToastState>(ToastState.None)
-    val toastState:LiveData<ToastState> = _toastState
+    val toastState: LiveData<ToastState> = _toastState
 
-    init {
-        searchMovieDetails(movieId)
-    }
 
     fun searchMovieDetails(movieId: String) {
         if (movieId.isNotEmpty()) {
             renderState(MovieDetailsState.Loading)
-            moviesInteractor.searchMovieDetails(movieId, object: MoviesInteractor.MovieDetailsConsumer {
-                override fun consume(movieDetails: MovieDetails?, errorMessage: String?) {
-                    if (movieDetails != null)
-                        renderState(MovieDetailsState.Content(movieDetails))
-                    else {
-                        renderState(MovieDetailsState.Error("Что-то пошло не так"))
-                        showToast(ToastState.Show(errorMessage.toString()))
+            moviesInteractor.searchMovieDetails(
+                movieId,
+                object : MoviesInteractor.MovieDetailsConsumer {
+                    override fun consume(movieDetails: MovieDetails?, errorMessage: String?) {
+                        if (movieDetails != null)
+                            renderState(MovieDetailsState.Content(movieDetails))
+                        else {
+                            renderState(MovieDetailsState.Error("Что-то пошло не так"))
+                            showToast(ToastState.Show(errorMessage.toString()))
+                        }
                     }
-                }
-            })
+                })
         }
+    }
+
+    init {
+        searchMovieDetails(movieId)
     }
 
     private fun renderState(state: MovieDetailsState) {
@@ -49,14 +54,18 @@ class AboutViewModel(private val movieId: String,
         _toastState.value = ToastState.None
     }
 
-    fun toggleFavorite(movieDetails: MovieDetails) {
-        if (movieDetails.inFavorite) {
-            moviesInteractor.removeMovieFromFavorites(movieDetails.id)
-            renderState(MovieDetailsState.Content(movieDetails.copy(inFavorite = false)))
-        } else {
-            moviesInteractor.addMovieToFavorites(movieDetails.id)
-            renderState(MovieDetailsState.Content(movieDetails.copy(inFavorite = true)))
-        }
+    fun toggleFavoriteCurrentMovie() {
+        if ((_stateLiveData.value as MovieDetailsState.Content).movieDetails.inFavorite)
+            moviesInteractor.removeMovieFromFavorites(movieId)
+        else
+            moviesInteractor.addMovieToFavorites(movieId)
+        renderInFavoriteClick()
+    }
+
+    private fun renderInFavoriteClick() {
+        val movieDetails = (_stateLiveData.value as MovieDetailsState.Content).movieDetails
+        val newMovieDetails = movieDetails.copy(inFavorite = !movieDetails.inFavorite)
+        renderState(MovieDetailsState.Content(newMovieDetails))
     }
 
 }
