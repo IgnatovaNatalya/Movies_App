@@ -34,7 +34,7 @@ class MoviesActivity : ComponentActivity() {
     private val adapter = MoviesAdapter(
         object : MoviesAdapter.MovieClickListener {
             override fun onMovieClick(movie: Movie) {
-                openPoster(movie)
+                openDetails(movie)
             }
             override fun onFavoriteToggleClick(movie: Movie) {
                 viewModel.toggleFavorite(movie)
@@ -95,7 +95,7 @@ class MoviesActivity : ComponentActivity() {
         return current
     }
 
-    private fun openPoster(movie: Movie) {
+    private fun openDetails(movie: Movie) {
         if (clickDebounce()) {
             val intent = Intent(this, DetailsActivity::class.java)
             intent.putExtra(EXTRA_POSTER, movie.image)

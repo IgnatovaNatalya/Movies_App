@@ -1,21 +1,87 @@
 package com.example.imdb.ui.cast
 
 import android.os.Bundle
+import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.imdb.R
+import com.example.imdb.databinding.ActivityMovieCastBinding
+import com.example.imdb.domain.models.MovieCast
+import com.example.imdb.presentation.CastViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 class MovieCastActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityMovieCastBinding
+
+    companion object {
+        const val MOVIE_ID = "MOVIE_ID"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_movie_cast)
+
+        binding = ActivityMovieCastBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        val movieId = intent.getStringExtra(MOVIE_ID).toString()
+
+        val viewModel: CastViewModel by viewModel {
+            parametersOf(movieId)
+        }
+
+        viewModel.movieCastState.observe(this) { renderCast(it) }
     }
+
+    private fun renderCast(state: MovieCastState) {
+        when (state) {
+            is MovieCastState.Content -> showContent(state.movieCast)
+            is MovieCastState.Error -> showError(state.errorMessage)
+            is MovieCastState.Loading -> showLoading()
+        }
+    }
+
+    private fun showContent(movieCast: MovieCast) {
+        showElements(View.VISIBLE)
+        binding.title.text = movieCast.title
+
+        binding.progressBar.visibility = View.GONE
+        binding.placeholderMessage.visibility = View.GONE
+    }
+
+    private fun showLoading() {
+        showElements(View.GONE)
+
+        binding.placeholderMessage.visibility = View.GONE
+        binding.progressBar.visibility = View.VISIBLE
+    }
+
+    private fun showError(errorMessage: String) {
+        showElements(View.GONE)
+        binding.placeholderMessage.visibility = View.VISIBLE
+        binding.placeholderMessage.text = errorMessage
+        binding.progressBar.visibility = View.GONE
+    }
+
+    private fun showElements(visibility: Int) {
+
+        binding.title.visibility = visibility
+        binding.directorsText.visibility = visibility
+        binding.directors.visibility = visibility
+        binding.writers.visibility = visibility
+        binding.writersText.visibility = visibility
+        binding.actors.visibility = visibility
+        binding.actorsText.visibility = visibility
+    }
+
 }

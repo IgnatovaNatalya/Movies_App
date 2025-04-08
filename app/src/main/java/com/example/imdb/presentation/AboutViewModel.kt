@@ -19,6 +19,8 @@ class AboutViewModel(
     private val _toastState = MutableLiveData<ToastState>(ToastState.None)
     val toastState: LiveData<ToastState> = _toastState
 
+//    private val _currentMovieId = MutableLiveData<String>(movieId)
+//    val currentMovieId: LiveData<String> = _currentMovieId
 
     fun searchMovieDetails(movieId: String) {
         if (movieId.isNotEmpty()) {

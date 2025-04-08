@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="h2">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="marginHorizontal">6dp</item>
+    </style>
+
+    <style name="content2">
+        <item name="android:background">@color/light_grey</item>
+    </style>
+</resources>

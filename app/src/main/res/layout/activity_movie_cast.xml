@@ -37,8 +37,83 @@
         android:layout_height="wrap_content"
         android:layout_marginVertical="20dp"
         android:textSize="36sp"
+        android:gravity="center"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Название фильма" />
+
+    <TextView
+        android:id="@+id/directors_text"
+        style="@style/h2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="6dp"
+        android:text="Режиссеры"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title"
+        tools:ignore="HardcodedText" />
+
+    <TextView
+        android:id="@+id/directors"
+        style="@style/content2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="6dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/directors_text"
+        tools:text="Joe" />
+
+    <TextView
+        android:id="@+id/writers_text"
+        style="@style/h2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="6dp"
+        android:text="Сценаристы"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/directors"
+        tools:ignore="HardcodedText" />
+
+    <TextView
+        android:id="@+id/writers"
+        style="@style/content2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="6dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/writers_text"
+        tools:text="Emma" />
+
+    <TextView
+        android:id="@+id/actors_text"
+        style="@style/h2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="6dp"
+        android:text="Актеры"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/writers"
+        tools:ignore="HardcodedText" />
+
+    <TextView
+        android:id="@+id/actors"
+        style="@style/content2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="6dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/actors_text"
+        tools:text="Brad" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,5 +1,6 @@
 package com.example.imdb.ui.details
 
+import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,6 +12,8 @@ import com.example.imdb.R
 import com.example.imdb.databinding.FragmentAboutBinding
 import com.example.imdb.domain.models.MovieDetails
 import com.example.imdb.presentation.AboutViewModel
+import com.example.imdb.ui.cast.MovieCastActivity
+import com.example.imdb.ui.movies.MoviesActivity.Companion.EXTRA_MOVIE_ID
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.getValue
@@ -20,9 +23,16 @@ class AboutFragment : Fragment() {
     companion object {
         const val MOVIE_ID = "MOVIE_ID"
 
-        fun newInstance(movieId: String) = AboutFragment().apply {
-            arguments = Bundle().apply {
-                putString(MOVIE_ID, movieId)
+        private var currentMovieId =""
+
+        fun newInstance(movieId: String): AboutFragment {
+
+            currentMovieId = movieId
+
+            return AboutFragment().apply {
+                arguments = Bundle().apply {
+                    putString(MOVIE_ID, movieId)
+                }
             }
         }
     }
@@ -45,7 +55,14 @@ class AboutFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.movieDetailsState.observe(viewLifecycleOwner) { renderAbout(it) }
+        binding.buttonCast.setOnClickListener { onCastClicked() }
         binding.inFavoriteToggle.setOnClickListener { onFavoriteToggleClick() }
+    }
+
+    private fun onCastClicked() {
+        val intent = Intent(requireActivity(), MovieCastActivity::class.java)
+        intent.putExtra(EXTRA_MOVIE_ID, currentMovieId)
+        startActivity(intent)
     }
 
     private fun renderAbout(state: MovieDetailsState) {

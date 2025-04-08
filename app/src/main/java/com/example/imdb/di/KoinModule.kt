@@ -10,6 +10,7 @@ import com.example.imdb.domain.api.MoviesInteractor
 import com.example.imdb.domain.api.MoviesRepository
 import com.example.imdb.domain.impl.MoviesInteractorImpl
 import com.example.imdb.presentation.AboutViewModel
+import com.example.imdb.presentation.CastViewModel
 import com.example.imdb.presentation.MoviesSearchViewModel
 import com.example.imdb.presentation.PosterViewModel
 import com.google.gson.Gson
@@ -50,5 +51,6 @@ val koinModule = module {
     viewModel { MoviesSearchViewModel(get(), androidContext()) }
     viewModel { (movieId: String) -> AboutViewModel(movieId, get()) }
     viewModel { (posterUrl: String) -> PosterViewModel(posterUrl) }
+    viewModel { (movieId: String) -> CastViewModel(movieId) }
 
 }
