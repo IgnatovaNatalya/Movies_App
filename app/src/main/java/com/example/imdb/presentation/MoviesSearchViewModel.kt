@@ -1,4 +1,4 @@
-package com.example.imdb.presentation.movies
+package com.example.imdb.presentation
 
 import android.content.Context
 import android.os.Handler

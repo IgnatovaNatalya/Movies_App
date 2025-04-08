@@ -9,9 +9,9 @@ import com.example.imdb.data.network.RetrofitNetworkClient
 import com.example.imdb.domain.api.MoviesInteractor
 import com.example.imdb.domain.api.MoviesRepository
 import com.example.imdb.domain.impl.MoviesInteractorImpl
-import com.example.imdb.presentation.details.AboutViewModel
-import com.example.imdb.presentation.movies.MoviesSearchViewModel
-import com.example.imdb.presentation.details.PosterViewModel
+import com.example.imdb.presentation.AboutViewModel
+import com.example.imdb.presentation.MoviesSearchViewModel
+import com.example.imdb.presentation.PosterViewModel
 import com.google.gson.Gson
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -48,15 +48,7 @@ val koinModule = module {
 
     //viewmodel
     viewModel { MoviesSearchViewModel(get(), androidContext()) }
-
-    //viewModel { DetailsViewModel(get()) }
-
-    viewModel {(movieId: String) ->
-        AboutViewModel(movieId, get())
-    }
-
-    viewModel {(posterUrl: String) ->
-        PosterViewModel(posterUrl)
-    }
+    viewModel { (movieId: String) -> AboutViewModel(movieId, get()) }
+    viewModel { (posterUrl: String) -> PosterViewModel(posterUrl) }
 
 }

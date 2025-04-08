@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import com.example.imdb.data.NetworkClient
+import com.example.imdb.data.dto.MovieCastRequest
 import com.example.imdb.data.dto.MovieDetailsRequest
 import com.example.imdb.data.dto.MovieSearchRequest
 import com.example.imdb.data.dto.Response
@@ -12,19 +13,22 @@ class RetrofitNetworkClient(private val context: Context, private val apiService
     NetworkClient {
 
     override fun doRequest(dto: Any): Response {
-        if (!isConnected()) {
-            return Response().apply { resultCode = -1 }
+        if (!isConnected()) return Response().apply { resultCode = -1 }
+
+//        val resp = if (dto is MovieSearchRequest) apiService.getMovies(dto.expression).execute()
+//        else if (dto is MovieDetailsRequest) apiService.getMovieDetails(dto.movieId).execute()
+//        else (dto is MovieCastRequest) apiService.getMovieCast(dto.movieId).execute()
+
+        val resp = when (dto) {
+            is MovieSearchRequest -> apiService.getMovies(dto.expression).execute()
+            is MovieDetailsRequest -> apiService.getMovieDetails(dto.movieId).execute()
+            else -> apiService.getMovieCast((dto as MovieCastRequest).movieId).execute()
         }
-        if (dto is MovieSearchRequest) {
-            val resp = apiService.getMovies(dto.expression).execute()
-            val body = resp.body() ?: Response()
-            return body.apply { resultCode = resp.code() }
-        } else if (dto is MovieDetailsRequest) {
-            val resp = apiService.getMovieDetails(dto.movieId).execute()
-            val body = resp.body() ?: Response()
-            return body.apply { resultCode = resp.code() }
-        } else {
-            return Response().apply { resultCode = 400 }
+
+        val body = resp.body()
+
+        return body?.apply { resultCode = resp.code() } ?: Response().apply {
+            resultCode = resp.code()
         }
     }
 

@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import com.example.imdb.R
 import com.example.imdb.databinding.FragmentAboutBinding
 import com.example.imdb.domain.models.MovieDetails
-import com.example.imdb.presentation.details.AboutViewModel
+import com.example.imdb.presentation.AboutViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.getValue

@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.imdb.R
 import com.example.imdb.databinding.ActivityMainBinding
 import com.example.imdb.domain.models.Movie
-import com.example.imdb.presentation.movies.MoviesSearchViewModel
+import com.example.imdb.presentation.MoviesSearchViewModel
 import com.example.imdb.ui.details.DetailsActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 

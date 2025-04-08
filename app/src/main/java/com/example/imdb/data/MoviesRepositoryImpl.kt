@@ -1,11 +1,14 @@
 package com.example.imdb.data
 
+import com.example.imdb.data.dto.MovieCastRequest
+import com.example.imdb.data.dto.MovieCastResponse
 import com.example.imdb.data.dto.MovieDetailsRequest
 import com.example.imdb.data.dto.MovieDetailsResponse
 import com.example.imdb.data.dto.MovieSearchRequest
 import com.example.imdb.data.dto.MovieSearchResponse
 import com.example.imdb.domain.api.MoviesRepository
 import com.example.imdb.domain.models.Movie
+import com.example.imdb.domain.models.MovieCast
 import com.example.imdb.domain.models.MovieDetails
 import com.example.imdb.util.Resource
 
@@ -28,7 +31,8 @@ class MoviesRepositoryImpl(
                 val foundMovies = (response as MovieSearchResponse).results
                 if (foundMovies.isNotEmpty()) {
                     Resource.Success(foundMovies.map {
-                        Movie(it.id, it.image, it.title,
+                        Movie(
+                            it.id, it.image, it.title,
                             it.description,
                             stored.contains(it.id)
                         )
@@ -49,23 +53,57 @@ class MoviesRepositoryImpl(
             -1 -> {
                 Resource.Error("Отсутствет подключение к интернету")
             }
+
             200 -> {
                 val stored = localStorage.getSavedFavorites()
-                val movieDetResponse = (response as MovieDetailsResponse)
 
-                return Resource.Success(MovieDetails(
-                    id = movieDetResponse.id,
-                    title = movieDetResponse.title,
-                    imDbRating = movieDetResponse.imDbRating,
-                    year = movieDetResponse.year,
-                    countries = movieDetResponse.countries,
-                    genres = movieDetResponse.genres,
-                    directors = movieDetResponse.directors,
-                    writers = movieDetResponse.writers,
-                    stars = movieDetResponse.stars,
-                    plot = movieDetResponse.plot,
-                    inFavorite =  stored.contains(movieDetResponse.id)))
+                with((response as MovieDetailsResponse)) {
+                    Resource.Success(
+                        MovieDetails(
+                            id = id,
+                            title = title,
+                            imDbRating = imDbRating,
+                            year = year,
+                            countries = countries,
+                            genres = genres,
+                            directors = directors,
+                            writers = writers,
+                            stars = stars,
+                            plot = plot,
+                            inFavorite = stored.contains(id)
+                        )
+                    )
+                }
             }
+
+            else -> {
+                Resource.Error("Ошибка сервера")
+            }
+        }
+    }
+
+    override fun searchMovieCast(movie_id: String): Resource<MovieCast> {
+        val response = networkClient.doRequest(MovieCastRequest(movie_id))
+
+        return when (response.resultCode) {
+            -1 -> {
+                Resource.Error("Отсутствет подключение к интернету")
+            }
+
+            200 -> {
+                with((response as MovieCastResponse)) {
+                    Resource.Success(
+                        MovieCast(
+                            title = title,
+                            directors = directors,
+                            writer = writer,
+                            actors = actors,
+                            others = others
+                        )
+                    )
+                }
+            }
+
             else -> {
                 Resource.Error("Ошибка сервера")
             }

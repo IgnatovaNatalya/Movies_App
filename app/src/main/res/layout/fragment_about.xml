@@ -180,6 +180,13 @@
         app:layout_constraintTop_toBottomOf="@+id/plot_text"
         tools:text="В одной далекой-далекой галатике ..." />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/inFavoriteToggle"
+        android:text="Посмотреть состав"/>
 
     <ImageView
         android:id="@+id/inFavoriteToggle"

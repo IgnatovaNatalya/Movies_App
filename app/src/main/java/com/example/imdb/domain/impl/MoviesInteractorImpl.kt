@@ -41,6 +41,23 @@ class MoviesInteractorImpl(private val repository: MoviesRepository) : MoviesInt
         }
     }
 
+    override fun searchMovieCast(
+        movieId: String,
+        consumer: MoviesInteractor.MovieCastConsumer
+    ) {
+        executor.execute {
+            when (val resource = repository.searchMovieCast(movieId)) {
+                is Resource.Success -> {
+                    consumer.consume(resource.data, null)
+                }
+
+                is Resource.Error -> {
+                    consumer.consume(null, resource.message)
+                }
+            }
+        }
+    }
+
     override fun addMovieToFavorites(movieId:String) {
         repository.addMovieToFavorites(movieId)
     }
