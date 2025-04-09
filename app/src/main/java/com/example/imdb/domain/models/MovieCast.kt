@@ -1,10 +1,11 @@
 package com.example.imdb.domain.models
 
 data class MovieCast(
+    val imDbId:String,
     val title: String,
-    val directors: CastJob,
-    val writer: CastJob,
-    val actors: List<StarPerson>,
+    val directors: CastJob?,
+    val writers: CastJob?,
+    val actors: List<Actor>,
     val others: List<CastJob>
 )
 
@@ -14,7 +15,7 @@ class CastPerson(
     val description: String
 )
 
-class StarPerson(
+class Actor(
     val id: String,
     val image: String,
     val name: String,

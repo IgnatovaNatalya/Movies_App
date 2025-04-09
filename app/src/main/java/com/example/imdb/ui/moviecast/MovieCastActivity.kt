@@ -1,4 +1,4 @@
-package com.example.imdb.ui.cast
+package com.example.imdb.ui.moviecast
 
 import android.os.Bundle
 import android.view.View
@@ -6,6 +6,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.imdb.R
 import com.example.imdb.databinding.ActivityMovieCastBinding
 import com.example.imdb.domain.models.MovieCast
@@ -17,9 +18,14 @@ class MovieCastActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMovieCastBinding
 
+    private val directorsAdapter = CastPersonAdapter()
+    private val writersAdapter = CastPersonAdapter()
+    private val actorsAdapter = ActorsAdapter()
+
     companion object {
         const val MOVIE_ID = "MOVIE_ID"
     }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +46,18 @@ class MovieCastActivity : AppCompatActivity() {
             parametersOf(movieId)
         }
 
+        binding.directorsRecycler.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        binding.directorsRecycler.adapter = directorsAdapter
+
+        binding.writersRecycler.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        binding.writersRecycler.adapter = writersAdapter
+
+        binding.actorsRecycler.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        binding.actorsRecycler.adapter = actorsAdapter
+
         viewModel.movieCastState.observe(this) { renderCast(it) }
     }
 
@@ -54,6 +72,9 @@ class MovieCastActivity : AppCompatActivity() {
     private fun showContent(movieCast: MovieCast) {
         showElements(View.VISIBLE)
         binding.title.text = movieCast.title
+        if (movieCast.directors != null) directorsAdapter.persons = movieCast.directors.items else directorsAdapter.persons = listOf()
+        if (movieCast.writers != null) writersAdapter.persons = movieCast.writers.items else writersAdapter.persons = listOf()
+        actorsAdapter.actors = movieCast.actors
 
         binding.progressBar.visibility = View.GONE
         binding.placeholderMessage.visibility = View.GONE
@@ -74,13 +95,12 @@ class MovieCastActivity : AppCompatActivity() {
     }
 
     private fun showElements(visibility: Int) {
-
         binding.title.visibility = visibility
         binding.directorsText.visibility = visibility
-        binding.directors.visibility = visibility
-        binding.writers.visibility = visibility
+        binding.directorsRecycler.visibility = visibility
+        binding.writersRecycler.visibility = visibility
         binding.writersText.visibility = visibility
-        binding.actors.visibility = visibility
+        binding.actorsRecycler.visibility = visibility
         binding.actorsText.visibility = visibility
     }
 

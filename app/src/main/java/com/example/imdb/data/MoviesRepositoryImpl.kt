@@ -11,6 +11,7 @@ import com.example.imdb.domain.models.Movie
 import com.example.imdb.domain.models.MovieCast
 import com.example.imdb.domain.models.MovieDetails
 import com.example.imdb.util.Resource
+import kotlin.String
 
 class MoviesRepositoryImpl(
     private val networkClient: NetworkClient,
@@ -94,9 +95,10 @@ class MoviesRepositoryImpl(
                 with((response as MovieCastResponse)) {
                     Resource.Success(
                         MovieCast(
+                            imDbId = imDbId,
                             title = title,
                             directors = directors,
-                            writer = writer,
+                            writers = writers,
                             actors = actors,
                             others = others
                         )

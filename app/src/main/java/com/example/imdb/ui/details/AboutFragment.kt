@@ -12,8 +12,7 @@ import com.example.imdb.R
 import com.example.imdb.databinding.FragmentAboutBinding
 import com.example.imdb.domain.models.MovieDetails
 import com.example.imdb.presentation.AboutViewModel
-import com.example.imdb.ui.cast.MovieCastActivity
-import com.example.imdb.ui.movies.MoviesActivity.Companion.EXTRA_MOVIE_ID
+import com.example.imdb.ui.moviecast.MovieCastActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.getValue
@@ -61,7 +60,7 @@ class AboutFragment : Fragment() {
 
     private fun onCastClicked() {
         val intent = Intent(requireActivity(), MovieCastActivity::class.java)
-        intent.putExtra(EXTRA_MOVIE_ID, currentMovieId)
+        intent.putExtra(MOVIE_ID, currentMovieId)
         startActivity(intent)
     }
 

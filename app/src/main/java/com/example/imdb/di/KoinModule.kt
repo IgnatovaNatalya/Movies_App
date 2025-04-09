@@ -51,6 +51,6 @@ val koinModule = module {
     viewModel { MoviesSearchViewModel(get(), androidContext()) }
     viewModel { (movieId: String) -> AboutViewModel(movieId, get()) }
     viewModel { (posterUrl: String) -> PosterViewModel(posterUrl) }
-    viewModel { (movieId: String) -> CastViewModel(movieId) }
+    viewModel { (movieId: String) -> CastViewModel(movieId, get()) }
 
 }

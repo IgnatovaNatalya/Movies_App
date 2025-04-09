@@ -1,4 +1,4 @@
-package com.example.imdb.ui.cast
+package com.example.imdb.ui.moviecast
 
 import com.example.imdb.domain.models.MovieCast
 

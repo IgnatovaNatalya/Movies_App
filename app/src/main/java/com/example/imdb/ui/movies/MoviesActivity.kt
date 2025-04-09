@@ -28,7 +28,7 @@ class MoviesActivity : ComponentActivity() {
         const val CLICK_DEBOUNCE_DELAY = 1000L
         const val EXTRA_POSTER = "poster"
         const val EXTRA_IN_FAVORITE = "inFavorite"
-        const val EXTRA_MOVIE_ID = "movieId"
+        const val EXTRA_MOVIE_ID = "MOVIE_ID"
     }
 
     private val adapter = MoviesAdapter(
