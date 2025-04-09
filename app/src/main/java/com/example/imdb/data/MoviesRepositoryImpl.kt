@@ -1,5 +1,6 @@
 package com.example.imdb.data
 
+import com.example.imdb.data.converter.MovieCastConverter
 import com.example.imdb.data.dto.MovieCastRequest
 import com.example.imdb.data.dto.MovieCastResponse
 import com.example.imdb.data.dto.MovieDetailsRequest
@@ -11,11 +12,11 @@ import com.example.imdb.domain.models.Movie
 import com.example.imdb.domain.models.MovieCast
 import com.example.imdb.domain.models.MovieDetails
 import com.example.imdb.util.Resource
-import kotlin.String
 
 class MoviesRepositoryImpl(
     private val networkClient: NetworkClient,
-    private val localStorage: LocalStorage
+    private val localStorage: LocalStorage,
+    private val movieCastConverter: MovieCastConverter,
 ) : MoviesRepository {
 
     override fun searchMovies(expression: String): Resource<List<Movie>> {
@@ -92,18 +93,9 @@ class MoviesRepositoryImpl(
             }
 
             200 -> {
-                with((response as MovieCastResponse)) {
                     Resource.Success(
-                        MovieCast(
-                            imDbId = imDbId,
-                            title = title,
-                            directors = directors,
-                            writers = writers,
-                            actors = actors,
-                            others = others
-                        )
+                        data = movieCastConverter.convert(response as MovieCastResponse)
                     )
-                }
             }
 
             else -> {

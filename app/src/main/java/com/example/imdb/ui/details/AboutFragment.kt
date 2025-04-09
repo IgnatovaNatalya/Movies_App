@@ -1,6 +1,5 @@
 package com.example.imdb.ui.details
 
-import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -54,14 +53,17 @@ class AboutFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.movieDetailsState.observe(viewLifecycleOwner) { renderAbout(it) }
-        binding.buttonCast.setOnClickListener { onCastClicked() }
+        binding.buttonCast.setOnClickListener { openMovieCast() }
         binding.inFavoriteToggle.setOnClickListener { onFavoriteToggleClick() }
     }
 
-    private fun onCastClicked() {
-        val intent = Intent(requireActivity(), MovieCastActivity::class.java)
-        intent.putExtra(MOVIE_ID, currentMovieId)
-        startActivity(intent)
+    private fun openMovieCast() {
+        startActivity(
+            MovieCastActivity.newInstance(
+                context = requireContext(),
+                movieId = requireArguments().getString(MOVIE_ID).orEmpty()
+            )
+        )
     }
 
     private fun renderAbout(state: MovieDetailsState) {

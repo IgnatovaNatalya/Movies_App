@@ -45,6 +45,7 @@ class MoviesActivity : ComponentActivity() {
     private val handler = Handler(Looper.getMainLooper())
     private var textWatcher: TextWatcher? = null
     private lateinit var binding: ActivityMainBinding
+
     private val viewModel: MoviesSearchViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {

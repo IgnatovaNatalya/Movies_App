@@ -4,11 +4,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.imdb.databinding.ItemCastBinding
-import com.example.imdb.domain.models.CastPerson
+import com.example.imdb.domain.models.MovieCastPerson
 
 class CastPersonAdapter: RecyclerView.Adapter<CastPersonViewHolder>() {
 
-    var persons = listOf<CastPerson>()
+    var persons = listOf<MovieCastPerson>()
 
     override fun onCreateViewHolder( parent: ViewGroup, viewType: Int): CastPersonViewHolder {
         val inflater = LayoutInflater.from(parent.context)

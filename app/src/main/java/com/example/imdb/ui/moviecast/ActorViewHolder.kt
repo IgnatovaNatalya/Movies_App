@@ -5,15 +5,15 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.imdb.R
 import com.example.imdb.databinding.ItemActorBinding
-import com.example.imdb.domain.models.Actor
+import com.example.imdb.domain.models.MovieCastPerson
 
 class ActorViewHolder(
     private val binding: ItemActorBinding
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(actor: Actor) {
+    fun bind(actor: MovieCastPerson) {
         binding.name.text = actor.name.toString()
-        binding.asCharacter.text = actor.asCharacter.toString()
+        binding.asCharacter.text = actor.description.toString()
 
         Glide.with(binding.root)
             .load(actor.image)

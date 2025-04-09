@@ -4,6 +4,7 @@ import android.content.Context
 import com.example.imdb.data.LocalStorage
 import com.example.imdb.data.MoviesRepositoryImpl
 import com.example.imdb.data.NetworkClient
+import com.example.imdb.data.converter.MovieCastConverter
 import com.example.imdb.data.network.ImdbApiService
 import com.example.imdb.data.network.RetrofitNetworkClient
 import com.example.imdb.domain.api.MoviesInteractor
@@ -21,18 +22,18 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 val koinModule = module {
-    single<MoviesRepository> { MoviesRepositoryImpl(get(), get()) }
+    factory<MoviesRepository> { MoviesRepositoryImpl(get(), get(), get()) }
 
-    single<NetworkClient> { RetrofitNetworkClient(androidContext(), get()) }
+    factory<NetworkClient> { RetrofitNetworkClient(androidContext(), get()) }
 
     //context
-    single {
+    factory {
         androidContext()
             .getSharedPreferences("local_storage", Context.MODE_PRIVATE)
     }
 
-    //apiServ
-    single<ImdbApiService> {
+    //apiService
+    factory<ImdbApiService> {
         Retrofit.Builder()
             .baseUrl("https://tv-api.com/")
             .addConverterFactory(GsonConverterFactory.create())
@@ -42,13 +43,14 @@ val koinModule = module {
 
     factory { Gson() }
 
-    single { LocalStorage(get()) }
+    factory { LocalStorage(get()) }
 
     //interactor
-    single<MoviesInteractor> { MoviesInteractorImpl(get()) }
+    factory<MoviesInteractor> { MoviesInteractorImpl(get()) }
+    factory<MovieCastConverter> { MovieCastConverter() }
 
     //viewmodel
-    viewModel { MoviesSearchViewModel(get(), androidContext()) }
+    viewModel { MoviesSearchViewModel(get()) }
     viewModel { (movieId: String) -> AboutViewModel(movieId, get()) }
     viewModel { (posterUrl: String) -> PosterViewModel(posterUrl) }
     viewModel { (movieId: String) -> CastViewModel(movieId, get()) }

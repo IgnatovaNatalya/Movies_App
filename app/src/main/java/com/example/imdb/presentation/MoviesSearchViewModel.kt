@@ -1,6 +1,5 @@
 package com.example.imdb.presentation
 
-import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
@@ -8,15 +7,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.imdb.R
 import com.example.imdb.domain.api.MoviesInteractor
 import com.example.imdb.domain.models.Movie
 import com.example.imdb.ui.movies.MoviesState
 import com.example.imdb.ui.movies.ToastState
 
 class MoviesSearchViewModel(
-    private val moviesInteractor: MoviesInteractor,
-    private val context: Context
+    private val moviesInteractor: MoviesInteractor
 ) : ViewModel() {
 
     companion object {
@@ -71,12 +68,7 @@ class MoviesSearchViewModel(
                         else if (errorMessage != null)
                             renderState(MoviesState.Empty(errorMessage.toString()))
                     } else {
-                        renderState(
-                            MoviesState.Error(
-                                //getApplication<Application>().getString(R.string.something_went_wrong)
-                                context.getString(R.string.something_went_wrong)
-                            )
-                        )
+                        renderState(MoviesState.Error("Что-то пошло не так"))
                         showToast(ToastState.Show(errorMessage.toString()))
                     }
                 }

@@ -1,14 +1,42 @@
 package com.example.imdb.data.dto
 
-import com.example.imdb.domain.models.CastJob
-import com.example.imdb.domain.models.Actor
-
 class MovieCastResponse(
-    val imDbId:String,
+    val actors: List<ActorResponse>,
+    val directors: DirectorsResponse,
+    val errorMessage: String,
+    val fullTitle: String,
+    val imDbId: String,
+    val others: List<OtherResponse>,
     val title: String,
-    val directors: CastJob,
-    val writers: CastJob,
-    val actors: List<Actor>,
-    val others: List<CastJob>
+    val type: String,
+    val writers: WritersResponse,
+    val year: String
 ) : Response()
 
+class ActorResponse(
+    val asCharacter: String,
+    val id: String,
+    val image: String,
+    val name: String
+)
+
+class DirectorsResponse(
+    val items: List<CastItemResponse>,
+    val job: String
+)
+
+class OtherResponse(
+    val items: List<CastItemResponse>,
+    val job: String
+)
+
+class WritersResponse(
+    val items: List<CastItemResponse>,
+    val job: String
+)
+
+class CastItemResponse(
+    val description: String,
+    val id: String,
+    val name: String
+)

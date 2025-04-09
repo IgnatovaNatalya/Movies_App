@@ -1,5 +1,7 @@
 package com.example.imdb.ui.moviecast
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.activity.enableEdgeToEdge
@@ -23,7 +25,13 @@ class MovieCastActivity : AppCompatActivity() {
     private val actorsAdapter = ActorsAdapter()
 
     companion object {
-        const val MOVIE_ID = "MOVIE_ID"
+        const val EXTRA_MOVIE_ID = "MOVIE_ID"
+
+        fun newInstance(context: Context, movieId: String): Intent {
+            return Intent(context, MovieCastActivity::class.java).apply {
+                putExtra(EXTRA_MOVIE_ID, movieId)
+            }
+        }
     }
 
 
@@ -40,7 +48,7 @@ class MovieCastActivity : AppCompatActivity() {
             insets
         }
 
-        val movieId = intent.getStringExtra(MOVIE_ID).toString()
+        val movieId = intent.getStringExtra(EXTRA_MOVIE_ID).toString()
 
         val viewModel: CastViewModel by viewModel {
             parametersOf(movieId)
@@ -71,9 +79,9 @@ class MovieCastActivity : AppCompatActivity() {
 
     private fun showContent(movieCast: MovieCast) {
         showElements(View.VISIBLE)
-        binding.title.text = movieCast.title
-        if (movieCast.directors != null) directorsAdapter.persons = movieCast.directors.items else directorsAdapter.persons = listOf()
-        if (movieCast.writers != null) writersAdapter.persons = movieCast.writers.items else writersAdapter.persons = listOf()
+        binding.title.text = movieCast.fullTitle
+        directorsAdapter.persons = movieCast.directors
+        writersAdapter.persons = movieCast.writers
         actorsAdapter.actors = movieCast.actors
 
         binding.progressBar.visibility = View.GONE
