@@ -11,7 +11,7 @@ import com.example.imdb.R
 import com.example.imdb.databinding.FragmentAboutBinding
 import com.example.imdb.domain.models.MovieDetails
 import com.example.imdb.presentation.details.AboutViewModel
-import com.example.imdb.ui.moviecast.MovieCastActivity
+import com.example.imdb.ui.cast.MovieCastActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.getValue

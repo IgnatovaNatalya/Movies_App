@@ -17,7 +17,7 @@
         android:theme="@style/Theme.Imdb"
         tools:targetApi="31">
         <activity
-            android:name=".ui.moviecast.MovieCastActivity"
+            android:name=".ui.cast.MovieCastActivity"
             android:exported="false" />
         <activity
             android:name=".ui.details.DetailsActivity"

@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.imdb.domain.api.MoviesInteractor
 import com.example.imdb.domain.models.MovieCast
-import com.example.imdb.ui.moviecast.MovieCastState
+import com.example.imdb.ui.cast.MovieCastState
 
 class CastViewModel(
     private val movieId: String,

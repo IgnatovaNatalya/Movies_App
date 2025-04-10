@@ -1,4 +1,4 @@
-package com.example.imdb.ui.moviecast
+package com.example.imdb.ui.cast
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.imdb.R
 import com.example.imdb.databinding.ActivityMovieCastBinding
 import com.example.imdb.presentation.cast.CastViewModel
+import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -20,11 +21,10 @@ class MovieCastActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMovieCastBinding
 
-//    private val directorsAdapter = CastPersonAdapter()
-//    private val writersAdapter = CastPersonAdapter()
-//    private val actorsAdapter = ActorsAdapter()
-
-    private val adapter =  MoviesCastAdapter()
+    private val adapter = ListDelegationAdapter(
+        movieCastHeaderDelegate(),
+        movieCastPersonDelegate(),
+    )
 
     companion object {
         const val EXTRA_MOVIE_ID = "MOVIE_ID"

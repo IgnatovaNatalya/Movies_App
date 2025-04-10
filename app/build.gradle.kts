@@ -59,4 +59,7 @@ dependencies {
     implementation(libs.retrofit.converter)
 
     implementation(libs.koin)
+
+    implementation(libs.adapterdelegates)
+    implementation(libs.adapterdelegates.binding)
 }
