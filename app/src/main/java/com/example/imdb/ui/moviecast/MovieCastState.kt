@@ -1,12 +1,13 @@
 package com.example.imdb.ui.moviecast
 
-import com.example.imdb.domain.models.MovieCast
+import com.example.imdb.presentation.cast.MovieCastRVItem
 
 sealed interface MovieCastState {
     object Loading : MovieCastState
 
     data class Content(
-        val movieCast: MovieCast
+        val fullTitle: String,
+        val items: List<MovieCastRVItem>,
     ) : MovieCastState
 
     data class Error(

@@ -10,10 +10,10 @@ import com.example.imdb.data.network.RetrofitNetworkClient
 import com.example.imdb.domain.api.MoviesInteractor
 import com.example.imdb.domain.api.MoviesRepository
 import com.example.imdb.domain.impl.MoviesInteractorImpl
-import com.example.imdb.presentation.AboutViewModel
-import com.example.imdb.presentation.CastViewModel
+import com.example.imdb.presentation.details.AboutViewModel
+import com.example.imdb.presentation.cast.CastViewModel
 import com.example.imdb.presentation.MoviesSearchViewModel
-import com.example.imdb.presentation.PosterViewModel
+import com.example.imdb.presentation.details.PosterViewModel
 import com.google.gson.Gson
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel

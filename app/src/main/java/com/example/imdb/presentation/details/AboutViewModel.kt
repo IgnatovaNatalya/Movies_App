@@ -1,4 +1,4 @@
-package com.example.imdb.presentation
+package com.example.imdb.presentation.details
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

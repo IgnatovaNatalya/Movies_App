@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.example.imdb.R
 import com.example.imdb.databinding.FragmentPosterBinding
-import com.example.imdb.presentation.PosterViewModel
+import com.example.imdb.presentation.details.PosterViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
