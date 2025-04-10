@@ -1,34 +1,28 @@
 package com.example.imdb.ui.movies
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.ComponentActivity
-import androidx.activity.enableEdgeToEdge
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.commit
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.imdb.R
-import com.example.imdb.databinding.ActivityMainBinding
+import com.example.imdb.databinding.FragmentMoviesBinding
 import com.example.imdb.domain.models.Movie
 import com.example.imdb.presentation.MoviesSearchViewModel
-import com.example.imdb.ui.details.DetailsActivity
+import com.example.imdb.ui.core.BindingFragment
+import com.example.imdb.ui.details.DetailsFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-
-class MoviesActivity : ComponentActivity() {
-
+class MoviesFragment : BindingFragment<FragmentMoviesBinding>() {
     companion object {
         const val CLICK_DEBOUNCE_DELAY = 1000L
-        const val EXTRA_POSTER = "poster"
-        const val EXTRA_IN_FAVORITE = "inFavorite"
-        const val EXTRA_MOVIE_ID = "MOVIE_ID"
     }
 
     private val adapter = MoviesAdapter(
@@ -36,6 +30,7 @@ class MoviesActivity : ComponentActivity() {
             override fun onMovieClick(movie: Movie) {
                 openDetails(movie)
             }
+
             override fun onFavoriteToggleClick(movie: Movie) {
                 viewModel.toggleFavorite(movie)
             }
@@ -44,25 +39,20 @@ class MoviesActivity : ComponentActivity() {
     private var isClickAllowed = true
     private val handler = Handler(Looper.getMainLooper())
     private var textWatcher: TextWatcher? = null
-    private lateinit var binding: ActivityMainBinding
 
     private val viewModel: MoviesSearchViewModel by viewModel()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+    override fun createBinding(inflater: LayoutInflater, container: ViewGroup?):
+            FragmentMoviesBinding {
+        return FragmentMoviesBinding.inflate(inflater, container, false)
+    }
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        viewModel.observeState().observe(this) { render(it) }
+        viewModel.observeState().observe(viewLifecycleOwner) { render(it) }
 
-        viewModel.observeToastState().observe(this) { toastState ->
+        viewModel.observeToastState().observe(viewLifecycleOwner) { toastState ->
             if (toastState is ToastState.Show) {
                 showToast(toastState.additionalMessage)
                 viewModel.toastWasShown()
@@ -70,7 +60,7 @@ class MoviesActivity : ComponentActivity() {
         }
 
         binding.recyclerMovies.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+            LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         binding.recyclerMovies.adapter = adapter
 
         textWatcher = object : TextWatcher {
@@ -78,7 +68,7 @@ class MoviesActivity : ComponentActivity() {
             }
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                this@MoviesActivity.viewModel.loadMoviesDebounce(changedText = p0?.toString() ?: "")
+                viewModel.loadMoviesDebounce(changedText = p0?.toString() ?: "")
             }
 
             override fun afterTextChanged(p0: Editable?) {
@@ -91,23 +81,31 @@ class MoviesActivity : ComponentActivity() {
         val current = isClickAllowed
         if (isClickAllowed) {
             isClickAllowed = false
-            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+            handler.postDelayed(
+                { isClickAllowed = true },
+                CLICK_DEBOUNCE_DELAY
+            )
         }
         return current
     }
 
     private fun openDetails(movie: Movie) {
         if (clickDebounce()) {
-            val intent = Intent(this, DetailsActivity::class.java)
-            intent.putExtra(EXTRA_POSTER, movie.image)
-            intent.putExtra(EXTRA_IN_FAVORITE, movie.inFavorite)
-            intent.putExtra(EXTRA_MOVIE_ID, movie.id)
-            startActivity(intent)
+//            val intent = Intent(activity, DetailsActivity::class.java)
+//            intent.putExtra(EXTRA_POSTER, movie.image)
+//            intent.putExtra(EXTRA_IN_FAVORITE, movie.inFavorite)
+//            intent.putExtra(EXTRA_MOVIE_ID, movie.id)
+//            startActivity(intent)
+
+            // activity?.supportFragmentManager?.beginTransaction()
+            parentFragmentManager.commit {
+                replace(R.id.fragment_container, DetailsFragment.newInstance(movie.id, movie.image, movie.inFavorite))
+            }
         }
     }
 
     private fun showToast(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+        Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
     }
 
     private fun render(state: MoviesState) {

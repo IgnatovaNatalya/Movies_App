@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.imdb.databinding.ActivityDetailsBinding
-import com.example.imdb.ui.movies.MoviesActivity
 import com.google.android.material.tabs.TabLayoutMediator
 
 class DetailsActivity : AppCompatActivity() {
@@ -28,8 +27,8 @@ class DetailsActivity : AppCompatActivity() {
             insets
         }
 
-        val poster = intent.getStringExtra(MoviesActivity.EXTRA_POSTER).toString()
-        val movieId = intent.getStringExtra(MoviesActivity.EXTRA_MOVIE_ID).toString()
+        val poster = intent.getStringExtra(MoviesActivity.EXTRA_POSTER).toString()//toDo
+        val movieId = intent.getStringExtra(MoviesActivity.EXTRA_MOVIE_ID).toString() //toDo
 
 
         binding.viewPager.adapter = DetailsViewPagerAdapter(supportFragmentManager, lifecycle, poster ,movieId)
