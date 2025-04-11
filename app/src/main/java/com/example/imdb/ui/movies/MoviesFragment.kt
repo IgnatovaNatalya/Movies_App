@@ -59,7 +59,7 @@ class MoviesFragment : BindingFragment<FragmentMoviesBinding>() {
         }
 
         binding.recyclerMovies.layoutManager =
-            LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.recyclerMovies.adapter = adapter
 
         textWatcher = object : TextWatcher {
@@ -90,11 +90,6 @@ class MoviesFragment : BindingFragment<FragmentMoviesBinding>() {
 
     private fun openDetails(movie: Movie) {
         if (clickDebounce()) {
-
-//            parentFragmentManager.commit {
-//                replace(R.id.fragment_container, DetailsFragment.newInstance(movie.id, movie.image))
-//            }
-
             parentFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, DetailsFragment.newInstance(movie.id, movie.image))
                 .addToBackStack("movies")
@@ -104,7 +99,7 @@ class MoviesFragment : BindingFragment<FragmentMoviesBinding>() {
     }
 
     private fun showToast(message: String) {
-        Toast.makeText(activity, message, Toast.LENGTH_LONG).show()
+        Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
     }
 
     private fun render(state: MoviesState) {
