@@ -11,7 +11,7 @@ import com.example.imdb.R
 import com.example.imdb.databinding.FragmentAboutBinding
 import com.example.imdb.domain.models.MovieDetails
 import com.example.imdb.presentation.details.AboutViewModel
-import com.example.imdb.ui.cast.MovieCastActivity
+import com.example.imdb.ui.cast.CastFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.getValue
@@ -58,12 +58,11 @@ class AboutFragment : Fragment() {
     }
 
     private fun openMovieCast() {
-        startActivity(
-            MovieCastActivity.newInstance(
-                context = requireContext(),
-                movieId = requireArguments().getString(MOVIE_ID).orEmpty()
-            )
-        )
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, CastFragment.newInstance(currentMovieId))
+            .addToBackStack("details")
+            .setReorderingAllowed(true)
+            .commit()
     }
 
     private fun renderAbout(state: MovieDetailsState) {

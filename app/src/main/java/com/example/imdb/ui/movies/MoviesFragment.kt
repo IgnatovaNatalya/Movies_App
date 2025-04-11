@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.commit
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.imdb.R
 import com.example.imdb.databinding.FragmentMoviesBinding
@@ -91,16 +90,16 @@ class MoviesFragment : BindingFragment<FragmentMoviesBinding>() {
 
     private fun openDetails(movie: Movie) {
         if (clickDebounce()) {
-//            val intent = Intent(activity, DetailsActivity::class.java)
-//            intent.putExtra(EXTRA_POSTER, movie.image)
-//            intent.putExtra(EXTRA_IN_FAVORITE, movie.inFavorite)
-//            intent.putExtra(EXTRA_MOVIE_ID, movie.id)
-//            startActivity(intent)
 
-            // activity?.supportFragmentManager?.beginTransaction()
-            parentFragmentManager.commit {
-                replace(R.id.fragment_container, DetailsFragment.newInstance(movie.id, movie.image, movie.inFavorite))
-            }
+//            parentFragmentManager.commit {
+//                replace(R.id.fragment_container, DetailsFragment.newInstance(movie.id, movie.image))
+//            }
+
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, DetailsFragment.newInstance(movie.id, movie.image))
+                .addToBackStack("movies")
+                .setReorderingAllowed(true)
+                .commit()
         }
     }
 
@@ -144,10 +143,10 @@ class MoviesFragment : BindingFragment<FragmentMoviesBinding>() {
         adapter.notifyDataSetChanged()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        binding.queryInput.removeTextChangedListener(textWatcher)
-    }
+//    override fun onDestroyView() {
+//        super.onDestroyView()
+//        binding.queryInput.removeTextChangedListener(textWatcher)
+//    }
 
     override fun onResume() {
         super.onResume()

@@ -1,65 +1,48 @@
 package com.example.imdb.ui.cast
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.imdb.R
-import com.example.imdb.databinding.ActivityMovieCastBinding
+import com.example.imdb.databinding.FragmentCastBinding
 import com.example.imdb.presentation.cast.CastViewModel
+import com.example.imdb.ui.core.BindingFragment
+import com.example.imdb.ui.details.DetailsFragment
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
+import kotlin.getValue
 
-class MovieCastActivity : AppCompatActivity() {
-
-    private lateinit var binding: ActivityMovieCastBinding
+class CastFragment : BindingFragment<FragmentCastBinding>() {
 
     private val adapter = ListDelegationAdapter(
         movieCastHeaderDelegate(),
         movieCastPersonDelegate(),
     )
 
-    companion object {
-        const val EXTRA_MOVIE_ID = "MOVIE_ID"
-
-        fun newInstance(context: Context, movieId: String): Intent {
-            return Intent(context, MovieCastActivity::class.java).apply {
-                putExtra(EXTRA_MOVIE_ID, movieId)
-            }
-        }
+    override fun createBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentCastBinding {
+        return FragmentCastBinding.inflate(inflater, container, false)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-
-        binding = ActivityMovieCastBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
-
-        val movieId = intent.getStringExtra(EXTRA_MOVIE_ID).toString()
+        val movieId = requireArguments().getString(DetailsFragment.Companion.EXTRA_MOVIE_ID).toString()
 
         val viewModel: CastViewModel by viewModel {
             parametersOf(movieId)
         }
 
         binding.movieCastRecyclerView.adapter = adapter
-        binding.movieCastRecyclerView.layoutManager = LinearLayoutManager(this)
+        binding.movieCastRecyclerView.layoutManager = LinearLayoutManager(activity)
 
-        viewModel.movieCastState.observe(this) { renderCast(it) }
+        viewModel.movieCastState.observe(viewLifecycleOwner) { renderCast(it) }
     }
 
     private fun renderCast(state: MovieCastState) {
@@ -78,7 +61,6 @@ class MovieCastActivity : AppCompatActivity() {
 
         binding.title.text = contentState.fullTitle
         adapter.items = contentState.items
-        //movieCast.directors + movieCast.writers +movieCast.actors + movieCast.others
         adapter.notifyDataSetChanged()
     }
 
@@ -94,5 +76,17 @@ class MovieCastActivity : AppCompatActivity() {
         binding.progressBar.isVisible = false
 
         binding.placeholderMessage.text = errorState.errorMessage
+    }
+
+    companion object {
+
+        const val EXTRA_MOVIE_ID = "MOVIE_ID"
+
+        fun newInstance(movieId: String) =
+            CastFragment().apply {
+                arguments = Bundle().apply {
+                    putString(EXTRA_MOVIE_ID, movieId)
+                }
+            }
     }
 }
