@@ -62,4 +62,9 @@ dependencies {
 
     implementation(libs.adapterdelegates)
     implementation(libs.adapterdelegates.binding)
+
+    implementation (libs.navigation.fragment)
+    implementation (libs.navigation.ui)
+
+    //implementation "androidx.fragment:fragment-ktx:1.5.6"
 }

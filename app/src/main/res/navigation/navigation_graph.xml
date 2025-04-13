@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_graph"
+    app:startDestination="@id/moviesFragment">
+
+    <fragment
+        android:id="@+id/moviesFragment"
+        android:name="com.example.imdb.ui.movies.MoviesFragment"
+        android:label="MoviesFragment" >
+        <action
+            android:id="@+id/action_moviesFragment_to_posterFragment"
+            app:destination="@id/posterFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/aboutFragment"
+        android:name="com.example.imdb.ui.details.AboutFragment"
+        android:label="fragment_about"
+        tools:layout="@layout/fragment_about" >
+        <action
+            android:id="@+id/action_aboutFragment_to_posterFragment2"
+            app:destination="@id/posterFragment" />
+        <action
+            android:id="@+id/action_aboutFragment_to_castFragment"
+            app:destination="@id/castFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/castFragment"
+        android:name="com.example.imdb.ui.cast.CastFragment"
+        android:label="fragment_cast"
+        tools:layout="@layout/fragment_cast" />
+    <fragment
+        android:id="@+id/posterFragment"
+        android:name="com.example.imdb.ui.details.PosterFragment"
+        android:label="fragment_poster"
+        tools:layout="@layout/fragment_poster" >
+        <action
+            android:id="@+id/action_posterFragment_to_aboutFragment2"
+            app:destination="@id/aboutFragment" />
+    </fragment>
+</navigation>
