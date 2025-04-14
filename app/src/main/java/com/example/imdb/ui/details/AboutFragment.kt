@@ -7,13 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.imdb.R
 import com.example.imdb.databinding.FragmentAboutBinding
 import com.example.imdb.domain.models.MovieDetails
-import com.example.imdb.navigation.Router
 import com.example.imdb.presentation.details.AboutViewModel
 import com.example.imdb.ui.cast.CastFragment
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.getValue
@@ -23,7 +22,7 @@ class AboutFragment : Fragment() {
     companion object {
         const val MOVIE_ID = "MOVIE_ID"
 
-        private var currentMovieId =""
+        private var currentMovieId = ""
 
         fun newInstance(movieId: String): AboutFragment {
 
@@ -36,8 +35,6 @@ class AboutFragment : Fragment() {
             }
         }
     }
-
-    private val router : Router by inject()
 
     private val viewModel: AboutViewModel by viewModel {
         parametersOf(requireArguments().getString(MOVIE_ID))
@@ -62,13 +59,10 @@ class AboutFragment : Fragment() {
     }
 
     private fun openMovieCast() {
-        router.openFragment(CastFragment.newInstance(currentMovieId))
-
-//        requireActivity().supportFragmentManager.beginTransaction()
-//            .replace(R.id.fragment_container, CastFragment.newInstance(currentMovieId))
-//            .addToBackStack("details")
-//            .setReorderingAllowed(true)
-//            .commit()
+        findNavController().navigate(
+            R.id.action_detailsFragment_to_castFragment,
+            CastFragment.createArgs(currentMovieId)
+        )
     }
 
     private fun renderAbout(state: MovieDetailsState) {
@@ -97,6 +91,7 @@ class AboutFragment : Fragment() {
         binding.progressBar.visibility = View.GONE
         binding.placeholderMessage.visibility = View.GONE
     }
+
     private fun showLoading() {
         showElements(View.GONE)
 
@@ -111,7 +106,7 @@ class AboutFragment : Fragment() {
         binding.progressBar.visibility = View.GONE
     }
 
-    private fun showElements(visibility:Int) {
+    private fun showElements(visibility: Int) {
         binding.title.visibility = visibility
         binding.rating.visibility = visibility
         binding.year.visibility = visibility

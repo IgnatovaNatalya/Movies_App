@@ -10,23 +10,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.imdb.R
 import com.example.imdb.databinding.FragmentMoviesBinding
 import com.example.imdb.domain.models.Movie
-import com.example.imdb.navigation.Router
 import com.example.imdb.presentation.MoviesSearchViewModel
 import com.example.imdb.ui.core.BindingFragment
 import com.example.imdb.ui.details.DetailsFragment
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MoviesFragment : BindingFragment<FragmentMoviesBinding>() {
     companion object {
         const val CLICK_DEBOUNCE_DELAY = 1000L
     }
-
-    private val router: Router by inject()
 
     private val adapter = MoviesAdapter(
         object : MoviesAdapter.MovieClickListener {
@@ -93,15 +90,11 @@ class MoviesFragment : BindingFragment<FragmentMoviesBinding>() {
     }
 
     private fun openDetails(movie: Movie) {
-        if (clickDebounce()) {
-            router.openFragment(DetailsFragment.newInstance(movie.id, movie.image))
-
-//            parentFragmentManager.beginTransaction()
-//                .replace(R.id.fragment_container, DetailsFragment.newInstance(movie.id, movie.image))
-//                .addToBackStack("movies")
-//                .setReorderingAllowed(true)
-//                .commit()
-        }
+        if (clickDebounce())
+            findNavController().navigate(
+                R.id.action_moviesFragment_to_detailsFragment,
+                DetailsFragment.createArgs(movie.id, movie.image)
+            )
     }
 
     private fun showToast(message: String) {

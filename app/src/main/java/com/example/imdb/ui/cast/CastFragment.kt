@@ -33,7 +33,8 @@ class CastFragment : BindingFragment<FragmentCastBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val movieId = requireArguments().getString(DetailsFragment.Companion.EXTRA_MOVIE_ID).toString()
+        val movieId =
+            requireArguments().getString(DetailsFragment.Companion.EXTRA_MOVIE_ID).toString()
 
         val viewModel: CastViewModel by viewModel {
             parametersOf(movieId)
@@ -82,11 +83,7 @@ class CastFragment : BindingFragment<FragmentCastBinding>() {
 
         const val EXTRA_MOVIE_ID = "MOVIE_ID"
 
-        fun newInstance(movieId: String) =
-            CastFragment().apply {
-                arguments = Bundle().apply {
-                    putString(EXTRA_MOVIE_ID, movieId)
-                }
-            }
+        fun createArgs(movieId: String) =
+            Bundle().apply { putString(EXTRA_MOVIE_ID, movieId) }
     }
 }

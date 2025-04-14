@@ -8,35 +8,35 @@
     <fragment
         android:id="@+id/moviesFragment"
         android:name="com.example.imdb.ui.movies.MoviesFragment"
-        android:label="MoviesFragment" >
+        android:label="fragment_movies"
+        tools:layout="@layout/fragment_movies">
         <action
-            android:id="@+id/action_moviesFragment_to_posterFragment"
-            app:destination="@id/posterFragment" />
+            android:id="@+id/action_moviesFragment_to_detailsFragment"
+            app:destination="@id/detailsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
+
     <fragment
-        android:id="@+id/aboutFragment"
-        android:name="com.example.imdb.ui.details.AboutFragment"
-        android:label="fragment_about"
-        tools:layout="@layout/fragment_about" >
+        android:id="@+id/detailsFragment"
+        android:name="com.example.imdb.ui.details.DetailsFragment"
+        android:label="fragment_details"
+        tools:layout="@layout/fragment_details">
         <action
-            android:id="@+id/action_aboutFragment_to_posterFragment2"
-            app:destination="@id/posterFragment" />
-        <action
-            android:id="@+id/action_aboutFragment_to_castFragment"
-            app:destination="@id/castFragment" />
+            android:id="@+id/action_detailsFragment_to_castFragment"
+            app:destination="@id/castFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
+
     <fragment
         android:id="@+id/castFragment"
         android:name="com.example.imdb.ui.cast.CastFragment"
         android:label="fragment_cast"
         tools:layout="@layout/fragment_cast" />
-    <fragment
-        android:id="@+id/posterFragment"
-        android:name="com.example.imdb.ui.details.PosterFragment"
-        android:label="fragment_poster"
-        tools:layout="@layout/fragment_poster" >
-        <action
-            android:id="@+id/action_posterFragment_to_aboutFragment2"
-            app:destination="@id/aboutFragment" />
-    </fragment>
+
 </navigation>
