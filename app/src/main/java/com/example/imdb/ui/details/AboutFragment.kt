@@ -11,7 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.imdb.R
 import com.example.imdb.databinding.FragmentAboutBinding
 import com.example.imdb.domain.models.MovieDetails
-import com.example.imdb.presentation.details.AboutViewModel
+import com.example.imdb.viewmodel.details.AboutViewModel
 import com.example.imdb.ui.cast.CastFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf

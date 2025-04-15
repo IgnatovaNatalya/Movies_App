@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.imdb.databinding.FragmentCastBinding
-import com.example.imdb.presentation.cast.CastViewModel
+import com.example.imdb.viewmodel.cast.CastViewModel
 import com.example.imdb.ui.core.BindingFragment
 import com.example.imdb.ui.details.DetailsFragment
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter

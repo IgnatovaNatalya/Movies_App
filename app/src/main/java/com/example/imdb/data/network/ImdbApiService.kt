@@ -3,6 +3,7 @@ package com.example.imdb.data.network
 import com.example.imdb.data.dto.MovieCastResponse
 import com.example.imdb.data.dto.MovieDetailsResponse
 import com.example.imdb.data.dto.MovieSearchResponse
+import com.example.imdb.data.dto.NamesSearchResponse
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -16,4 +17,7 @@ interface ImdbApiService {
 
     @GET("/en/API/FullCast/k_zcuw1ytf/{movie_id}")
     fun getMovieCast(@Path("movie_id") movieId: String): Call<MovieCastResponse>
+
+    @GET("https://tv-api.com/en/API/SearchName/k_zcuw1ytf/{expression}")
+    fun getNames(@Path("expression") request: String): Call<NamesSearchResponse>
 }

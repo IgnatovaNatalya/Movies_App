@@ -1,4 +1,4 @@
-package com.example.imdb.presentation
+package com.example.imdb.viewmodel
 
 import android.os.Handler
 import android.os.Looper

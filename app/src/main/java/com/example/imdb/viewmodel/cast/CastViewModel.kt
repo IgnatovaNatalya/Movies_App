@@ -1,4 +1,4 @@
-package com.example.imdb.presentation.cast
+package com.example.imdb.viewmodel.cast
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -8,7 +8,7 @@ import com.example.imdb.domain.models.MovieCast
 import com.example.imdb.ui.cast.MovieCastState
 
 class CastViewModel(
-    private val movieId: String,
+    movieId: String,
     private val moviesInteractor: MoviesInteractor,
 ) : ViewModel() {
 

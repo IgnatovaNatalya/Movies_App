@@ -7,10 +7,13 @@ import com.example.imdb.data.dto.MovieDetailsRequest
 import com.example.imdb.data.dto.MovieDetailsResponse
 import com.example.imdb.data.dto.MovieSearchRequest
 import com.example.imdb.data.dto.MovieSearchResponse
+import com.example.imdb.data.dto.NamesSearchRequest
+import com.example.imdb.data.dto.NamesSearchResponse
 import com.example.imdb.domain.api.MoviesRepository
 import com.example.imdb.domain.models.Movie
 import com.example.imdb.domain.models.MovieCast
 import com.example.imdb.domain.models.MovieDetails
+import com.example.imdb.domain.models.Name
 import com.example.imdb.util.Resource
 
 class MoviesRepositoryImpl(
@@ -37,6 +40,33 @@ class MoviesRepositoryImpl(
                             it.id, it.image, it.title,
                             it.description,
                             stored.contains(it.id)
+                        )
+                    })
+                } else Resource.Error("Ничего не найдено")
+            }
+
+            else -> {
+                Resource.Error("Ошибка сервера")
+            }
+        }
+    }
+
+    override fun searchNames(expression: String): Resource<List<Name>> {
+        val response = networkClient.doRequest(NamesSearchRequest(expression))
+
+        return when (response.resultCode) {
+            -1 -> {
+                Resource.Error("Отсутствет подключение к интернету")
+            }
+
+            200 -> {
+                val foundNames = (response as NamesSearchResponse).results
+                if (foundNames.isNotEmpty()) {
+                    Resource.Success(foundNames.map {
+                        Name(
+                            it.id, it.image,
+                            it.title,
+                            it.description
                         )
                     })
                 } else Resource.Error("Ничего не найдено")

@@ -7,6 +7,7 @@ import com.example.imdb.data.NetworkClient
 import com.example.imdb.data.dto.MovieCastRequest
 import com.example.imdb.data.dto.MovieDetailsRequest
 import com.example.imdb.data.dto.MovieSearchRequest
+import com.example.imdb.data.dto.NamesSearchRequest
 import com.example.imdb.data.dto.Response
 
 class RetrofitNetworkClient(private val context: Context, private val apiService: ImdbApiService) :
@@ -15,12 +16,9 @@ class RetrofitNetworkClient(private val context: Context, private val apiService
     override fun doRequest(dto: Any): Response {
         if (!isConnected()) return Response().apply { resultCode = -1 }
 
-//        val resp = if (dto is MovieSearchRequest) apiService.getMovies(dto.expression).execute()
-//        else if (dto is MovieDetailsRequest) apiService.getMovieDetails(dto.movieId).execute()
-//        else (dto is MovieCastRequest) apiService.getMovieCast(dto.movieId).execute()
-
         val resp = when (dto) {
             is MovieSearchRequest -> apiService.getMovies(dto.expression).execute()
+            is NamesSearchRequest -> apiService.getNames(dto.expression).execute()
             is MovieDetailsRequest -> apiService.getMovieDetails(dto.movieId).execute()
             else -> apiService.getMovieCast((dto as MovieCastRequest).movieId).execute()
         }

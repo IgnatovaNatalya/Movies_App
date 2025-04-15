@@ -20,6 +20,13 @@
     </fragment>
 
     <fragment
+        android:id="@+id/namesFragment"
+        android:name="com.example.imdb.ui.names.NamesFragment"
+        android:label="fragment_movies"
+        tools:layout="@layout/fragment_names">
+    </fragment>
+
+    <fragment
         android:id="@+id/detailsFragment"
         android:name="com.example.imdb.ui.details.DetailsFragment"
         android:label="fragment_details"
@@ -38,5 +45,10 @@
         android:name="com.example.imdb.ui.cast.CastFragment"
         android:label="fragment_cast"
         tools:layout="@layout/fragment_cast" />
+    <fragment
+        android:id="@+id/infoFragment"
+        android:name="com.example.imdb.InfoFragment"
+        android:label="fragment_info"
+        tools:layout="@layout/fragment_info" />
 
 </navigation>

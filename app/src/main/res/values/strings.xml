@@ -4,6 +4,11 @@
     <string name="something_went_wrong">Что-то пошло не так</string>
     <string name="nothing_found">Ничего не найдено</string>
     <string name="no_internet">Отсутствует подключение к интернету</string>
-    <!-- TODO: Remove or change this placeholder text -->
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="names">Актеры</string>
+    <string name="about">О приложении</string>
+    <string name="version">Версия 1.0</string>
+    <string name="developer">Разработчик приложения:\nХомяк Байт</string>
+    <string name="app_title">Поиск по базе IMDB</string>
 </resources>

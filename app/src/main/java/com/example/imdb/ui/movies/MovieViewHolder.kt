@@ -1,5 +1,6 @@
 package com.example.imdb.ui.movies
 
+import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -24,9 +25,8 @@ class MovieViewHolder(
             .load(movie.image)
             .placeholder(R.drawable.cover_blank)
             .centerInside()
-            //.centerCrop()
             .transform(RoundedCorners(20))
-            .into(binding.cover)
+            .into(binding.image)
 
         binding.inFavoriteToggle.setImageDrawable(getFavoriteToggleDrawable(movie.inFavorite))
 
@@ -34,6 +34,7 @@ class MovieViewHolder(
         binding.inFavoriteToggle.setOnClickListener { clickListener.onFavoriteToggleClick(movie)}
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     private fun getFavoriteToggleDrawable(inFavorite: Boolean): Drawable? {
         return parent.context.getDrawable(
             if (inFavorite) R.drawable.star_on else R.drawable.star_off

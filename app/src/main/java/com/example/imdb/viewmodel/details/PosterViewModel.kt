@@ -1,10 +1,10 @@
-package com.example.imdb.presentation.details
+package com.example.imdb.viewmodel.details
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class PosterViewModel(private val posterUrl: String) : ViewModel() {
+class PosterViewModel(posterUrl: String) : ViewModel() {
 
     private val _posterLiveData = MutableLiveData<String>()
 
@@ -13,5 +13,4 @@ class PosterViewModel(private val posterUrl: String) : ViewModel() {
     }
 
     val posterLiveData: LiveData<String> = _posterLiveData
-
 }

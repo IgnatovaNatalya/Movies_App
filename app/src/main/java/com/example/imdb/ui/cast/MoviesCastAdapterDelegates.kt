@@ -5,7 +5,7 @@ import com.bumptech.glide.Glide
 import com.example.imdb.databinding.ItemCastBinding
 import com.example.imdb.ui.core.RVItem
 import com.example.imdb.databinding.ItemCastHeaderBinding
-import com.example.imdb.presentation.cast.MovieCastRVItem
+import com.example.imdb.viewmodel.cast.MovieCastRVItem
 import com.hannesdorfmann.adapterdelegates4.dsl.adapterDelegateViewBinding
 
 // Делегат для заголовков на экране состава участников
