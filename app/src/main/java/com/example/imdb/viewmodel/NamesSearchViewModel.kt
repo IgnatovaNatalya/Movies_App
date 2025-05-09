@@ -1,15 +1,16 @@
 package com.example.imdb.viewmodel
 
-import android.os.Handler
-import android.os.Looper
-import android.os.SystemClock
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import com.example.imdb.domain.api.MoviesInteractor
 import com.example.imdb.domain.models.Name
 import com.example.imdb.ui.movies.ToastState
 import com.example.imdb.ui.names.NamesState
+import kotlinx.coroutines.Job
 
 class NamesSearchViewModel(
     private val moviesInteractor: MoviesInteractor
@@ -17,10 +18,7 @@ class NamesSearchViewModel(
 
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
-        private val SEARCH_REQUEST_TOKEN = Any()
     }
-
-    private val handler = Handler(Looper.getMainLooper())
 
     private val _stateLiveData = MutableLiveData<NamesState>()
     val namesState: LiveData<NamesState> = _stateLiveData
@@ -29,18 +27,18 @@ class NamesSearchViewModel(
     fun observeToastState(): LiveData<ToastState> = toastState
 
     private var latestQueryText: String? = null
-
-    override fun onCleared() {
-        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
-    }
+    private var searchJob: Job? = null
 
     fun loadNamesDebounce(changedText: String) {
         if (latestQueryText == changedText) return
+
         latestQueryText = changedText
-        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
-        val searchRunnable = Runnable { loadNames(changedText) }
-        val postTime = SystemClock.uptimeMillis() + SEARCH_DEBOUNCE_DELAY
-        handler.postAtTime(searchRunnable, SEARCH_REQUEST_TOKEN, postTime)
+        searchJob?.cancel()
+
+        searchJob = viewModelScope.launch {
+            delay(SEARCH_DEBOUNCE_DELAY)
+            loadNames(changedText)
+        }
     }
 
     private fun loadNames(newQueryText: String) {
@@ -74,5 +72,4 @@ class NamesSearchViewModel(
     fun toastWasShown() {
         toastState.value = ToastState.None
     }
-
 }
