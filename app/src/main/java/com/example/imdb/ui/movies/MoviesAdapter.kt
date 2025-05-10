@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.imdb.domain.models.Movie
 import com.example.imdb.databinding.ItemMovieBinding
 
-class MoviesAdapter(private val clickListener: MovieClickListener) :
+class MoviesAdapter(val clickListener: MovieClickListener) :
     RecyclerView.Adapter<MovieViewHolder>() {
 
     var movies = listOf<Movie>()

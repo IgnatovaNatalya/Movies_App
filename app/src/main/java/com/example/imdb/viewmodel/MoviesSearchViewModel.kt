@@ -1,16 +1,15 @@
 package com.example.imdb.viewmodel
 
-import android.os.Handler
-import android.os.Looper
-import android.os.SystemClock
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.imdb.domain.api.MoviesInteractor
 import com.example.imdb.domain.models.Movie
 import com.example.imdb.ui.movies.MoviesState
 import com.example.imdb.ui.movies.ToastState
+import com.example.imdb.util.debounce
 
 class MoviesSearchViewModel(
     private val moviesInteractor: MoviesInteractor
@@ -18,10 +17,13 @@ class MoviesSearchViewModel(
 
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
-        private val SEARCH_REQUEST_TOKEN = Any()
     }
 
-    private val handler = Handler(Looper.getMainLooper())
+    private val movieSearchDebounce = debounce<String>(
+        SEARCH_DEBOUNCE_DELAY,
+        viewModelScope,
+        true
+    ) { request -> loadMovies(request) }
 
     private val stateLiveData = MutableLiveData<MoviesState>()
 
@@ -43,17 +45,10 @@ class MoviesSearchViewModel(
 
     private var latestQueryText: String? = null
 
-    override fun onCleared() {
-        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
-    }
-
     fun loadMoviesDebounce(changedText: String) {
         if (latestQueryText == changedText) return
         latestQueryText = changedText
-        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
-        val searchRunnable = Runnable { loadMovies(changedText) }
-        val postTime = SystemClock.uptimeMillis() + SEARCH_DEBOUNCE_DELAY
-        handler.postAtTime(searchRunnable, SEARCH_REQUEST_TOKEN, postTime)
+        movieSearchDebounce(changedText)
     }
 
     private fun loadMovies(newQueryText: String) {
