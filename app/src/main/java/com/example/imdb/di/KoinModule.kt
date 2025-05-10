@@ -52,7 +52,7 @@ val koinModule = module {
 
     //viewmodel
     viewModel { MoviesSearchViewModel(get()) }
-    viewModel { NamesSearchViewModel(get()) }
+    viewModel { NamesSearchViewModel(get(), get()) }
     viewModel { (movieId: String) -> AboutViewModel(movieId, get()) }
     viewModel { (posterUrl: String) -> PosterViewModel(posterUrl) }
     viewModel { (movieId: String) -> CastViewModel(movieId, get()) }

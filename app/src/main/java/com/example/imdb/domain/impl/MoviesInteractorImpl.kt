@@ -2,7 +2,10 @@ package com.example.imdb.domain.impl
 
 import com.example.imdb.domain.api.MoviesInteractor
 import com.example.imdb.domain.api.MoviesRepository
+import com.example.imdb.domain.models.Name
 import com.example.imdb.util.Resource
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import java.util.concurrent.Executors
 
 class MoviesInteractorImpl(private val repository: MoviesRepository) : MoviesInteractor {
@@ -24,11 +27,24 @@ class MoviesInteractorImpl(private val repository: MoviesRepository) : MoviesInt
         }
     }
 
-    override fun searchNames(expression: String, consumer: MoviesInteractor.NamesConsumer) {
-        executor.execute {
-            when (val resource = repository.searchNames(expression)) {
-                is Resource.Success -> { consumer.consume(resource.data, null)}
-                is Resource.Error -> {consumer.consume(null, resource.message)}
+//    override fun searchNames(expression: String, consumer: MoviesInteractor.NamesConsumer) {
+//        executor.execute {
+//            when (val resource = repository.searchNames(expression)) {
+//                is Resource.Success -> { consumer.consume(resource.data, null)}
+//                is Resource.Error -> {consumer.consume(null, resource.message)}
+//            }
+//        }
+//    }
+
+    override fun searchNames(expression: String): Flow<Pair<List<Name>?, String?>> {
+        return repository.searchNames(expression).map { result ->
+            when(result) {
+                is Resource.Success -> {
+                    Pair(result.data, null)
+                }
+                is Resource.Error -> {
+                    Pair(null, result.message)
+                }
             }
         }
     }
@@ -66,6 +82,8 @@ class MoviesInteractorImpl(private val repository: MoviesRepository) : MoviesInt
             }
         }
     }
+
+
 
     override fun addMovieToFavorites(movieId:String) {
         repository.addMovieToFavorites(movieId)

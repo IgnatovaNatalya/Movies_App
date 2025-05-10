@@ -15,6 +15,8 @@ import com.example.imdb.domain.models.MovieCast
 import com.example.imdb.domain.models.MovieDetails
 import com.example.imdb.domain.models.Name
 import com.example.imdb.util.Resource
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class MoviesRepositoryImpl(
     private val networkClient: NetworkClient,
@@ -51,29 +53,29 @@ class MoviesRepositoryImpl(
         }
     }
 
-    override fun searchNames(expression: String): Resource<List<Name>> {
+    override fun searchNames(expression: String): Flow<Resource<List<Name>>> = flow {
         val response = networkClient.doRequest(NamesSearchRequest(expression))
 
-        return when (response.resultCode) {
+        when (response.resultCode) {
             -1 -> {
-                Resource.Error("Отсутствет подключение к интернету")
+                emit(Resource.Error("Проверьте подключение к интернету"))
             }
 
             200 -> {
-                val foundNames = (response as NamesSearchResponse).results
-                if (foundNames.isNotEmpty()) {
-                    Resource.Success(foundNames.map {
+                with(response as NamesSearchResponse) {
+                    val data = results.map {
                         Name(
                             it.id, it.image,
                             it.title,
                             it.description
                         )
-                    })
-                } else Resource.Error("Ничего не найдено")
+                    }
+                    emit(Resource.Success(data))
+                }
             }
 
             else -> {
-                Resource.Error("Ошибка сервера")
+                emit(Resource.Error("Ошибка сервера"))
             }
         }
     }
@@ -114,8 +116,8 @@ class MoviesRepositoryImpl(
         }
     }
 
-    override fun searchMovieCast(movie_id: String): Resource<MovieCast> {
-        val response = networkClient.doRequest(MovieCastRequest(movie_id))
+    override fun searchMovieCast(movieId: String): Resource<MovieCast> {
+        val response = networkClient.doRequest(MovieCastRequest(movieId))
 
         return when (response.resultCode) {
             -1 -> {
