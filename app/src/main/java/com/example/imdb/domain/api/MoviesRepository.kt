@@ -8,7 +8,7 @@ import com.example.imdb.util.Resource
 import kotlinx.coroutines.flow.Flow
 
 interface MoviesRepository {
-    fun searchMovies(expression: String): Resource<List<Movie>>
+    fun searchMovies(expression: String): Flow<Resource<List<Movie>>>
     //fun searchNames(expression: String): Resource<List<Name>>
     fun searchNames(expression: String): Flow<Resource<List<Name>>>
     fun searchMovieDetails(movieId: String): Resource<MovieDetails>

@@ -24,31 +24,54 @@ class MoviesRepositoryImpl(
     private val movieCastConverter: MovieCastConverter,
 ) : MoviesRepository {
 
-    override fun searchMovies(expression: String): Resource<List<Movie>> {
+//    override fun searchMovies(expression: String): Resource<List<Movie>> {
+//        val response = networkClient.doRequest(MovieSearchRequest(expression))
+//        //можно тут трансформировать данные для передачи в domain-слой если надо
+//
+//        return when (response.resultCode) {
+//            -1 -> {
+//                Resource.Error("Отсутствет подключение к интернету")
+//            }
+//
+//            200 -> {
+//                val stored = localStorage.getSavedFavorites()
+//                val foundMovies = (response as MovieSearchResponse).results
+//                if (foundMovies.isNotEmpty()) {
+//                    Resource.Success(foundMovies.map {
+//                        Movie(
+//                            it.id, it.image, it.title,
+//                            it.description,
+//                            stored.contains(it.id)
+//                        )
+//                    })
+//                } else Resource.Error("Ничего не найдено")
+//            }
+//
+//            else -> {
+//                Resource.Error("Ошибка сервера")
+//            }
+//        }
+//    }
+
+    override fun searchMovies(expression: String): Flow<Resource<List<Movie>>> = flow {
         val response = networkClient.doRequest(MovieSearchRequest(expression))
         //можно тут трансформировать данные для передачи в domain-слой если надо
 
-        return when (response.resultCode) {
+        when (response.resultCode) {
             -1 -> {
-                Resource.Error("Отсутствет подключение к интернету")
+                emit(Resource.Error("Отсутствет подключение к интернету"))
             }
 
             200 -> {
                 val stored = localStorage.getSavedFavorites()
-                val foundMovies = (response as MovieSearchResponse).results
-                if (foundMovies.isNotEmpty()) {
-                    Resource.Success(foundMovies.map {
-                        Movie(
-                            it.id, it.image, it.title,
-                            it.description,
-                            stored.contains(it.id)
-                        )
-                    })
-                } else Resource.Error("Ничего не найдено")
-            }
-
-            else -> {
-                Resource.Error("Ошибка сервера")
+                (response as MovieSearchResponse).results.takeIf { it.isNotEmpty() }
+                    ?.let { movies ->
+                        emit(Resource.Success(movies.map {
+                            Movie(
+                                it.id, it.image, it.title, it.description,
+                                stored.contains(it.id))
+                        }))
+                    } ?: emit(Resource.Error("Ничего не найдено"))
             }
         }
     }
@@ -64,11 +87,7 @@ class MoviesRepositoryImpl(
             200 -> {
                 with(response as NamesSearchResponse) {
                     val data = results.map {
-                        Name(
-                            it.id, it.image,
-                            it.title,
-                            it.description
-                        )
+                        Name(it.id, it.image, it.title, it.description)
                     }
                     emit(Resource.Success(data))
                 }

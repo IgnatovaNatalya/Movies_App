@@ -10,7 +10,7 @@ import retrofit2.http.Path
 
 interface ImdbApiService {
     @GET("en/API/SearchMovie/k_zcuw1ytf/{request}")
-    fun getMovies(@Path("request") request: String): Call<MovieSearchResponse>
+    suspend fun getMovies(@Path("request") request: String): MovieSearchResponse
 
     @GET("/en/API/Title/k_zcuw1ytf/{movie_id}")
     fun getMovieDetails(@Path("movie_id") movieId: String): Call<MovieDetailsResponse>

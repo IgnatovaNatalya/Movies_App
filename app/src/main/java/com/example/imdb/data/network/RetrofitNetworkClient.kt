@@ -19,7 +19,6 @@ class RetrofitNetworkClient(private val context: Context, private val apiService
         if (!isConnected()) return Response().apply { resultCode = -1 }
 
         val resp = when (dto) {
-            is MovieSearchRequest -> apiService.getMovies(dto.expression).execute()
             is MovieDetailsRequest -> apiService.getMovieDetails(dto.movieId).execute()
             else -> apiService.getMovieCast((dto as MovieCastRequest).movieId).execute()
         }
@@ -34,13 +33,14 @@ class RetrofitNetworkClient(private val context: Context, private val apiService
     override suspend fun doRequestSuspend(dto: Any): Response {
         if (!isConnected()) return Response().apply { resultCode = -1 }
 
-        if (dto !is NamesSearchRequest) {
-            return Response().apply { resultCode = 400 }
-        }
         return withContext(Dispatchers.IO) {
             try {
-                val response = apiService.getNames(dto.expression)
-                response.apply { resultCode = 200 }
+                val response = when (dto) {
+                    is MovieSearchRequest -> apiService.getMovies(dto.expression)
+                    is NamesSearchRequest -> apiService.getNames(dto.expression)
+                    else -> null
+                }
+                response?.apply { resultCode = 200 } ?: Response().apply { resultCode = 500 }
             } catch (e: Throwable) {
                 Response().apply { resultCode = 500 }
             }
