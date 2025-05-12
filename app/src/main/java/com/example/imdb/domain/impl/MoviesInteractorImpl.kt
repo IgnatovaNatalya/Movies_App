@@ -2,6 +2,7 @@ package com.example.imdb.domain.impl
 
 import com.example.imdb.domain.api.MoviesInteractor
 import com.example.imdb.domain.api.MoviesRepository
+import com.example.imdb.domain.models.Movie
 import com.example.imdb.domain.models.Name
 import com.example.imdb.util.Resource
 import kotlinx.coroutines.flow.Flow
@@ -12,29 +13,35 @@ class MoviesInteractorImpl(private val repository: MoviesRepository) : MoviesInt
 
     private val executor = Executors.newCachedThreadPool()
 
-    override fun searchMovies(expression: String, consumer: MoviesInteractor.MoviesConsumer) {
-        executor.execute {
+//    override fun searchMovies(expression: String, consumer: MoviesInteractor.MoviesConsumer) {
+//        executor.execute {
+//            //здесь можно осортировать и отфильтровать результаты если надо
+//            when (val resource = repository.searchMovies(expression)) {
+//                is Resource.Success -> {
+//                    consumer.consume(resource.data, null)
+//                }
+//
+//                is Resource.Error -> {
+//                    consumer.consume(null, resource.message)
+//                }
+//            }
+//        }
+//    }
+
+    override fun searchMovies(expression: String): Flow<Pair<List<Movie>?, String?>> {
+        return repository.searchMovies (expression).map { result ->
             //здесь можно осортировать и отфильтровать результаты если надо
-            when (val resource = repository.searchMovies(expression)) {
+            when (result) {
                 is Resource.Success -> {
-                    consumer.consume(resource.data, null)
+                    Pair(result.data, null)
                 }
 
                 is Resource.Error -> {
-                    consumer.consume(null, resource.message)
+                    Pair(null, result.message)
                 }
             }
         }
     }
-
-//    override fun searchNames(expression: String, consumer: MoviesInteractor.NamesConsumer) {
-//        executor.execute {
-//            when (val resource = repository.searchNames(expression)) {
-//                is Resource.Success -> { consumer.consume(resource.data, null)}
-//                is Resource.Error -> {consumer.consume(null, resource.message)}
-//            }
-//        }
-//    }
 
     override fun searchNames(expression: String): Flow<Pair<List<Name>?, String?>> {
         return repository.searchNames(expression).map { result ->

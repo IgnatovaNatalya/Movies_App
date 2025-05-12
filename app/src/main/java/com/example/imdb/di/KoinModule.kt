@@ -51,11 +51,10 @@ val koinModule = module {
     factory<MovieCastConverter> { MovieCastConverter() }
 
     //viewmodel
-    viewModel { MoviesSearchViewModel(get()) }
+    viewModel { MoviesSearchViewModel(get(), get()) }
     viewModel { NamesSearchViewModel(get(), get()) }
     viewModel { (movieId: String) -> AboutViewModel(movieId, get()) }
     viewModel { (posterUrl: String) -> PosterViewModel(posterUrl) }
     viewModel { (movieId: String) -> CastViewModel(movieId, get()) }
-
 
 }

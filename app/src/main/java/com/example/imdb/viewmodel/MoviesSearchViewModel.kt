@@ -1,17 +1,22 @@
 package com.example.imdb.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.imdb.R
 import com.example.imdb.domain.api.MoviesInteractor
 import com.example.imdb.domain.models.Movie
 import com.example.imdb.ui.movies.MoviesState
-import com.example.imdb.ui.movies.ToastState
-import com.example.imdb.util.debounce
+import com.example.imdb.ui.movies.SingleLiveEvent
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class MoviesSearchViewModel(
+    private val context: Context,
     private val moviesInteractor: MoviesInteractor
 ) : ViewModel() {
 
@@ -19,11 +24,12 @@ class MoviesSearchViewModel(
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
     }
 
-    private val movieSearchDebounce = debounce<String>(
-        SEARCH_DEBOUNCE_DELAY,
-        viewModelScope,
-        true
-    ) { request -> loadMovies(request) }
+//    private val movieSearchDebounce = debounce<String>(
+//        SEARCH_DEBOUNCE_DELAY,
+//        viewModelScope,
+//        true
+//    ) { request -> loadMovies(request) }
+
 
     private val stateLiveData = MutableLiveData<MoviesState>()
 
@@ -38,49 +44,67 @@ class MoviesSearchViewModel(
         }
     }
 
+    private val showToast = SingleLiveEvent<String?>()
+
+    fun observeShowToast(): LiveData<String?> = showToast
+
     fun observeState(): LiveData<MoviesState> = mediatorStateLiveData
 
-    private val toastState = MutableLiveData<ToastState>(ToastState.None)
-    fun observeToastState(): LiveData<ToastState> = toastState
-
     private var latestQueryText: String? = null
+    private var searchJob: Job? = null
 
     fun loadMoviesDebounce(changedText: String) {
         if (latestQueryText == changedText) return
         latestQueryText = changedText
-        movieSearchDebounce(changedText)
+
+        searchJob?.cancel()
+
+        searchJob = viewModelScope.launch {
+            delay(SEARCH_DEBOUNCE_DELAY)
+            loadMovies(changedText)
+        }
     }
 
     private fun loadMovies(newQueryText: String) {
         if (newQueryText.isNotEmpty()) {
             renderState(MoviesState.Loading)
-            moviesInteractor.searchMovies(newQueryText, object : MoviesInteractor.MoviesConsumer {
-                override fun consume(foundMovies: List<Movie>?, errorMessage: String?) {
+            viewModelScope.launch {
+                moviesInteractor
+                    .searchMovies(newQueryText)
+                    .collect { pair -> processResult(pair.first, pair.second) }
+            }
+        }
+    }
 
-                    if (foundMovies != null) {
-                        if (foundMovies.isNotEmpty())
-                            renderState(MoviesState.Content(foundMovies))
-                        else if (errorMessage != null)
-                            renderState(MoviesState.Empty(errorMessage.toString()))
-                    } else {
-                        renderState(MoviesState.Error("Что-то пошло не так"))
-                        showToast(ToastState.Show(errorMessage.toString()))
-                    }
-                }
-            })
+    private fun processResult(foundMovies: List<Movie>?, errorMessage: String?) {
+        val movies = mutableListOf<Movie>()
+
+        if (foundMovies != null) {
+            movies.addAll(foundMovies)
+        }
+
+        when {
+            errorMessage != null -> {
+                renderState(
+                    MoviesState.Error(
+                        errorMessage = context.getString(R.string.something_went_wrong)
+                    )
+                )
+                showToast.postValue(errorMessage)
+            }
+
+            movies.isEmpty() -> {
+                renderState(MoviesState.Empty(message = context.getString(R.string.nothing_found)))
+            }
+
+            else -> {
+                renderState(MoviesState.Content(movies = movies))
+            }
         }
     }
 
     private fun renderState(state: MoviesState) {
         stateLiveData.postValue(state)
-    }
-
-    fun showToast(toast: ToastState) {
-        toastState.postValue(toast)
-    }
-
-    fun toastWasShown() {
-        toastState.value = ToastState.None
     }
 
     fun toggleFavorite(movie: Movie) {

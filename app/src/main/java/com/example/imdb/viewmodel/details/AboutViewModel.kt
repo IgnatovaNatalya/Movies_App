@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import com.example.imdb.domain.api.MoviesInteractor
 import com.example.imdb.domain.models.MovieDetails
 import com.example.imdb.ui.details.MovieDetailsState
-import com.example.imdb.ui.movies.ToastState
 
 class AboutViewModel(
     private val movieId: String,
@@ -15,9 +14,6 @@ class AboutViewModel(
 
     private val _stateLiveData = MutableLiveData<MovieDetailsState>()
     val movieDetailsState: LiveData<MovieDetailsState> = _stateLiveData
-
-    private val _toastState = MutableLiveData<ToastState>(ToastState.None)
-    val toastState: LiveData<ToastState> = _toastState
 
     fun searchMovieDetails(movieId: String) {
         if (movieId.isNotEmpty()) {
@@ -30,7 +26,7 @@ class AboutViewModel(
                             renderState(MovieDetailsState.Content(movieDetails))
                         else {
                             renderState(MovieDetailsState.Error("Что-то пошло не так"))
-                            showToast(ToastState.Show(errorMessage.toString()))
+                            //showToast(ToastState.Show(errorMessage.toString()))
                         }
                     }
                 })
@@ -45,13 +41,6 @@ class AboutViewModel(
         _stateLiveData.postValue(state)
     }
 
-    fun showToast(toast: ToastState) {
-        _toastState.postValue(toast)
-    }
-
-    fun toastWasShown() {
-        _toastState.value = ToastState.None
-    }
 
     fun toggleFavoriteCurrentMovie() {
         if ((_stateLiveData.value as MovieDetailsState.Content).movieDetails.inFavorite)

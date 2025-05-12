@@ -7,11 +7,13 @@ import com.example.imdb.domain.models.Name
 import kotlinx.coroutines.flow.Flow
 
 interface MoviesInteractor {
-    fun searchMovies(expression: String, consumer: MoviesConsumer)
+//    fun searchMovies(expression: String, consumer: MoviesConsumer)
+//
+//    interface MoviesConsumer {
+//        fun consume(foundMovies: List<Movie>?, errorMessage: String?)
+//    }
 
-    interface MoviesConsumer {
-        fun consume(foundMovies: List<Movie>?, errorMessage: String?)
-    }
+    fun searchMovies(expression: String) : Flow<Pair<List<Movie>?, String?>>
 
     fun addMovieToFavorites(movieId:String)
     fun removeMovieFromFavorites(movieId:String)

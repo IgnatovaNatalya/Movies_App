@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.imdb.databinding.FragmentNamesBinding
 import com.example.imdb.domain.models.Name
 import com.example.imdb.ui.core.BindingFragment
-import com.example.imdb.ui.movies.ToastState
 import com.example.imdb.viewmodel.NamesSearchViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -33,12 +32,7 @@ class NamesFragment : BindingFragment<FragmentNamesBinding>() {
 
         viewModel.namesState.observe(viewLifecycleOwner) { render(it) }
 
-        viewModel.observeToastState().observe(viewLifecycleOwner) { toastState ->
-            if (toastState is ToastState.Show) {
-                showToast(toastState.additionalMessage)
-                viewModel.toastWasShown()
-            }
-        }
+        viewModel.observeShowToast().observe(requireActivity()) { showToast(it) }
 
         binding.recyclerNames.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
@@ -58,7 +52,7 @@ class NamesFragment : BindingFragment<FragmentNamesBinding>() {
         binding.queryInput.addTextChangedListener(textWatcher)
     }
 
-    private fun showToast(message: String) {
+    private fun showToast(message: String?) {
         Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
     }
 

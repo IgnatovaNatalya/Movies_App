@@ -49,11 +49,8 @@ class MoviesFragment : BindingFragment<FragmentMoviesBinding>() {
 
         viewModel.observeState().observe(viewLifecycleOwner) { render(it) }
 
-        viewModel.observeToastState().observe(viewLifecycleOwner) { toastState ->
-            if (toastState is ToastState.Show) {
-                showToast(toastState.additionalMessage)
-                viewModel.toastWasShown()
-            }
+        viewModel.observeShowToast().observe(requireActivity()) {
+            showToast(it)
         }
 
         onMovieClickDebounce = debounce<Movie>(
@@ -92,10 +89,11 @@ class MoviesFragment : BindingFragment<FragmentMoviesBinding>() {
             override fun afterTextChanged(p0: Editable?) {}
         }
         queryInput.addTextChangedListener(textWatcher)
+
     }
 
-    private fun showToast(message: String) {
-        Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
+    private fun showToast(additionalMessage: String?) {
+        Toast.makeText(activity, additionalMessage, Toast.LENGTH_LONG).show()
     }
 
     private fun render(state: MoviesState) {

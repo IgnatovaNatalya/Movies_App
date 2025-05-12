@@ -54,7 +54,7 @@ class MoviesRepositoryImpl(
 //    }
 
     override fun searchMovies(expression: String): Flow<Resource<List<Movie>>> = flow {
-        val response = networkClient.doRequest(MovieSearchRequest(expression))
+        val response = networkClient.doRequestSuspend(MovieSearchRequest(expression))
         //можно тут трансформировать данные для передачи в domain-слой если надо
 
         when (response.resultCode) {
@@ -77,7 +77,7 @@ class MoviesRepositoryImpl(
     }
 
     override fun searchNames(expression: String): Flow<Resource<List<Name>>> = flow {
-        val response = networkClient.doRequest(NamesSearchRequest(expression))
+        val response = networkClient.doRequestSuspend(NamesSearchRequest(expression))
 
         when (response.resultCode) {
             -1 -> {

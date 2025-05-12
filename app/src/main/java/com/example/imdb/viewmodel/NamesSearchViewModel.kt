@@ -9,7 +9,6 @@ import com.example.imdb.R
 import com.example.imdb.domain.api.MoviesInteractor
 import com.example.imdb.domain.models.Name
 import com.example.imdb.ui.movies.SingleLiveEvent
-import com.example.imdb.ui.movies.ToastState
 import com.example.imdb.ui.names.NamesState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -26,9 +25,6 @@ class NamesSearchViewModel(
 
     private val _stateLiveData = MutableLiveData<NamesState>()
     val namesState: LiveData<NamesState> = _stateLiveData
-
-    private val _toastState = MutableLiveData<ToastState>(ToastState.None)
-    fun observeToastState(): LiveData<ToastState> = _toastState
 
     private val showToast = SingleLiveEvent<String?>()
     fun observeShowToast(): LiveData<String?> = showToast
@@ -47,26 +43,6 @@ class NamesSearchViewModel(
             loadNames(changedText)
         }
     }
-
-//    private fun loadNames(newQueryText: String) {
-//        if (newQueryText.isNotEmpty()) {
-//            renderState(NamesState.Loading)
-//            moviesInteractor.searchNames(newQueryText, object : MoviesInteractor.NamesConsumer {
-//                override fun consume(foundNames: List<Name>?, errorMessage: String?) {
-//
-//                    if (foundNames != null) {
-//                        if (foundNames.isNotEmpty())
-//                            renderState(NamesState.Content(foundNames))
-//                        else if (errorMessage != null)
-//                            renderState(NamesState.Empty(errorMessage.toString()))
-//                    } else {
-//                        renderState(NamesState.Error("Что-то пошло не так"))
-//                        showToast(ToastState.Show(errorMessage.toString()))
-//                    }
-//                }
-//            })
-//        }
-//    }
 
     private fun loadNames(newQueryText: String) {
         if (newQueryText.isNotEmpty()) {
@@ -109,13 +85,5 @@ class NamesSearchViewModel(
 
     private fun renderState(state: NamesState) {
         _stateLiveData.postValue(state)
-    }
-
-    fun showToast(toast: ToastState) {
-        _toastState.postValue(toast)
-    }
-
-    fun toastWasShown() {
-        _toastState.value = ToastState.None
     }
 }
