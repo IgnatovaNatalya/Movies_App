@@ -11,8 +11,7 @@ import com.example.imdb.domain.api.MoviesInteractor
 import com.example.imdb.domain.models.Movie
 import com.example.imdb.ui.movies.MoviesState
 import com.example.imdb.ui.movies.SingleLiveEvent
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
+import com.example.imdb.util.debounce
 import kotlinx.coroutines.launch
 
 class MoviesSearchViewModel(
@@ -23,13 +22,6 @@ class MoviesSearchViewModel(
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
     }
-
-//    private val movieSearchDebounce = debounce<String>(
-//        SEARCH_DEBOUNCE_DELAY,
-//        viewModelScope,
-//        true
-//    ) { request -> loadMovies(request) }
-
 
     private val stateLiveData = MutableLiveData<MoviesState>()
 
@@ -51,18 +43,19 @@ class MoviesSearchViewModel(
     fun observeState(): LiveData<MoviesState> = mediatorStateLiveData
 
     private var latestQueryText: String? = null
-    private var searchJob: Job? = null
+
+    private val movieSearchDebounce = debounce<String>(
+        SEARCH_DEBOUNCE_DELAY,
+        viewModelScope,
+        true
+    ) { request -> loadMovies(request) }
 
     fun loadMoviesDebounce(changedText: String) {
+
         if (latestQueryText == changedText) return
+
         latestQueryText = changedText
-
-        searchJob?.cancel()
-
-        searchJob = viewModelScope.launch {
-            delay(SEARCH_DEBOUNCE_DELAY)
-            loadMovies(changedText)
-        }
+        movieSearchDebounce(changedText)
     }
 
     private fun loadMovies(newQueryText: String) {

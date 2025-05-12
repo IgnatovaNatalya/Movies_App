@@ -49,9 +49,7 @@ class MoviesFragment : BindingFragment<FragmentMoviesBinding>() {
 
         viewModel.observeState().observe(viewLifecycleOwner) { render(it) }
 
-        viewModel.observeShowToast().observe(requireActivity()) {
-            showToast(it)
-        }
+        viewModel.observeShowToast().observe(requireActivity()) { showToast(it) }
 
         onMovieClickDebounce = debounce<Movie>(
             CLICK_DEBOUNCE_DELAY,
@@ -63,6 +61,7 @@ class MoviesFragment : BindingFragment<FragmentMoviesBinding>() {
                 DetailsFragment.createArgs(movie.id, movie.image)
             )
         }
+
         adapter = MoviesAdapter(
             object : MoviesAdapter.MovieClickListener {
                 override fun onMovieClick(movie: Movie) {
@@ -86,6 +85,7 @@ class MoviesFragment : BindingFragment<FragmentMoviesBinding>() {
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 viewModel.loadMoviesDebounce(changedText = p0?.toString() ?: "")
             }
+
             override fun afterTextChanged(p0: Editable?) {}
         }
         queryInput.addTextChangedListener(textWatcher)
