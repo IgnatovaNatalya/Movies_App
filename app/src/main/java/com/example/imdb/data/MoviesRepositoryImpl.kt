@@ -1,6 +1,6 @@
 package com.example.imdb.data
 
-import com.example.imdb.data.converter.MovieCastConverter
+import com.example.imdb.data.converters.MovieCastConverter
 import com.example.imdb.data.dto.MovieCastRequest
 import com.example.imdb.data.dto.MovieCastResponse
 import com.example.imdb.data.dto.MovieDetailsRequest

@@ -1,4 +1,4 @@
-package com.example.imdb.data.converter
+package com.example.imdb.data.converters
 
 import com.example.imdb.data.dto.ActorResponse
 import com.example.imdb.data.dto.CastItemResponse

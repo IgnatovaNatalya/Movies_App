@@ -68,5 +68,9 @@ dependencies {
     implementation(libs.coroutines)
     implementation(libs.lifecycle)
 
+    implementation(libs.room)
+    annotationProcessor(libs.room.compiler)
+    implementation(libs.room.ktx)
+
     //implementation "androidx.fragment:fragment-ktx:1.5.6"
 }
