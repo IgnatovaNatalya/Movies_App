@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface MoviesRepository {
     fun searchMovies(expression: String): Flow<Resource<List<Movie>>>
-    //fun searchNames(expression: String): Resource<List<Name>>
     fun searchNames(expression: String): Flow<Resource<List<Name>>>
     fun searchMovieDetails(movieId: String): Resource<MovieDetails>
     fun searchMovieCast(movieId: String): Resource<MovieCast>

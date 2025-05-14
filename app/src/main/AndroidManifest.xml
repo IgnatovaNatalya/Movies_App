@@ -17,7 +17,7 @@
         android:theme="@style/Theme.Imdb"
         tools:targetApi="31">
         <activity
-            android:name=".ui.RootActivity"
+            android:name=".presentation.RootActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustNothing">
             <intent-filter>

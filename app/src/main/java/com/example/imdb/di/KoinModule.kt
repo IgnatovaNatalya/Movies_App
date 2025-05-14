@@ -2,6 +2,7 @@ package com.example.imdb.di
 
 import android.content.Context
 import androidx.room.Room
+import com.example.imdb.data.HistoryRepositoryImpl
 import com.example.imdb.data.LocalStorage
 import com.example.imdb.data.MoviesRepositoryImpl
 import com.example.imdb.data.NetworkClient
@@ -12,12 +13,16 @@ import com.example.imdb.data.network.ImdbApiService
 import com.example.imdb.data.network.RetrofitNetworkClient
 import com.example.imdb.domain.api.MoviesInteractor
 import com.example.imdb.domain.api.MoviesRepository
+import com.example.imdb.domain.db.HistoryInteractor
+import com.example.imdb.domain.db.HistoryRepository
+import com.example.imdb.domain.impl.HistoryInteractorImpl
 import com.example.imdb.domain.impl.MoviesInteractorImpl
-import com.example.imdb.viewmodel.details.AboutViewModel
-import com.example.imdb.viewmodel.cast.CastViewModel
-import com.example.imdb.viewmodel.MoviesSearchViewModel
-import com.example.imdb.viewmodel.NamesSearchViewModel
-import com.example.imdb.viewmodel.details.PosterViewModel
+import com.example.imdb.presentation.cast.CastViewModel
+import com.example.imdb.presentation.details.about.AboutViewModel
+import com.example.imdb.presentation.details.poster.PosterViewModel
+import com.example.imdb.presentation.history.HistoryViewModel
+import com.example.imdb.presentation.movies.MoviesSearchViewModel
+import com.example.imdb.presentation.names.NamesSearchViewModel
 import com.google.gson.Gson
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -29,15 +34,13 @@ val koinModule = module {
 
     //DATA module
 
-    factory<MoviesRepository> { MoviesRepositoryImpl(get(), get(), get()) }
+    factory<MoviesRepository> { MoviesRepositoryImpl(get(), get(), get(), get(), get()) }
     factory<NetworkClient> { RetrofitNetworkClient(androidContext(), get()) }
     factory { MovieDbConvertor() }
+    factory<HistoryRepository> { HistoryRepositoryImpl(get(), get()) }
 
-    //context
-    factory {
-        androidContext()
-            .getSharedPreferences("local_storage", Context.MODE_PRIVATE)
-    }
+    //sp
+    factory { androidContext().getSharedPreferences("local_storage", Context.MODE_PRIVATE) }
 
     //apiService
     factory<ImdbApiService> {
@@ -63,13 +66,15 @@ val koinModule = module {
     //interactor
     factory<MoviesInteractor> { MoviesInteractorImpl(get()) }
     factory<MovieCastConverter> { MovieCastConverter() }
+    factory<HistoryInteractor> { HistoryInteractorImpl(get()) }
 
     //PRESENTATION module
     //viewmodel
-    viewModel { MoviesSearchViewModel(get(), get()) }
-    viewModel { NamesSearchViewModel(get(), get()) }
+    viewModel { MoviesSearchViewModel(androidContext(), get()) }
+    viewModel { NamesSearchViewModel(androidContext(), get()) }
     viewModel { (movieId: String) -> AboutViewModel(movieId, get()) }
     viewModel { (posterUrl: String) -> PosterViewModel(posterUrl) }
     viewModel { (movieId: String) -> CastViewModel(movieId, get()) }
+    viewModel { HistoryViewModel(androidContext(), get()) }
 
 }

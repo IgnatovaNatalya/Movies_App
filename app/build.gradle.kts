@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    id("kotlin-kapt")
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -69,7 +69,7 @@ dependencies {
     implementation(libs.lifecycle)
 
     implementation(libs.room)
-    annotationProcessor(libs.room.compiler)
+    ksp(libs.room.compiler)
     implementation(libs.room.ktx)
 
     //implementation "androidx.fragment:fragment-ktx:1.5.6"

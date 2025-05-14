@@ -13,21 +13,6 @@ class MoviesInteractorImpl(private val repository: MoviesRepository) : MoviesInt
 
     private val executor = Executors.newCachedThreadPool()
 
-//    override fun searchMovies(expression: String, consumer: MoviesInteractor.MoviesConsumer) {
-//        executor.execute {
-//            //здесь можно осортировать и отфильтровать результаты если надо
-//            when (val resource = repository.searchMovies(expression)) {
-//                is Resource.Success -> {
-//                    consumer.consume(resource.data, null)
-//                }
-//
-//                is Resource.Error -> {
-//                    consumer.consume(null, resource.message)
-//                }
-//            }
-//        }
-//    }
-
     override fun searchMovies(expression: String): Flow<Pair<List<Movie>?, String?>> {
         return repository.searchMovies (expression).map { result ->
             //здесь можно осортировать и отфильтровать результаты если надо

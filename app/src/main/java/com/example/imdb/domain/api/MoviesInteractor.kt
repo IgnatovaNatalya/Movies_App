@@ -7,11 +7,6 @@ import com.example.imdb.domain.models.Name
 import kotlinx.coroutines.flow.Flow
 
 interface MoviesInteractor {
-//    fun searchMovies(expression: String, consumer: MoviesConsumer)
-//
-//    interface MoviesConsumer {
-//        fun consume(foundMovies: List<Movie>?, errorMessage: String?)
-//    }
 
     fun searchMovies(expression: String) : Flow<Pair<List<Movie>?, String?>>
 
@@ -26,19 +21,11 @@ interface MoviesInteractor {
         fun consume(movieDetails: MovieDetails?, errorMessage: String?)
     }
 
-
     fun searchMovieCast(movieId:String, consumer: MovieCastConsumer)
 
     interface MovieCastConsumer {
         fun consume(movieCast: MovieCast?, errorMessage: String?)
     }
-
-//
-//    fun searchNames(expression: String, consumer: NamesConsumer)
-//
-//    interface NamesConsumer {
-//        fun consume(foundNames: List<Name>?, errorMessage: String?)
-//    }
 
     fun searchNames(expression: String): Flow<Pair<List<Name>?, String?>>
 

@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:paddingHorizontal="12dp"
-    tools:context=".ui.details.AboutFragment">
+    tools:context=".presentation.details.about.AboutFragment">
 
     <ProgressBar
         android:id="@+id/progressBar"

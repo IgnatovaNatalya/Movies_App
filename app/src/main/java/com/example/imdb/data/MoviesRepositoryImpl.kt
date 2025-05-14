@@ -1,10 +1,13 @@
 package com.example.imdb.data
 
 import com.example.imdb.data.converters.MovieCastConverter
+import com.example.imdb.data.converters.MovieDbConvertor
+import com.example.imdb.data.db.AppDatabase
 import com.example.imdb.data.dto.MovieCastRequest
 import com.example.imdb.data.dto.MovieCastResponse
 import com.example.imdb.data.dto.MovieDetailsRequest
 import com.example.imdb.data.dto.MovieDetailsResponse
+import com.example.imdb.data.dto.MovieDto
 import com.example.imdb.data.dto.MovieSearchRequest
 import com.example.imdb.data.dto.MovieSearchResponse
 import com.example.imdb.data.dto.NamesSearchRequest
@@ -22,36 +25,9 @@ class MoviesRepositoryImpl(
     private val networkClient: NetworkClient,
     private val localStorage: LocalStorage,
     private val movieCastConverter: MovieCastConverter,
+    private val appDatabase: AppDatabase,
+    private val movieDbConvertor: MovieDbConvertor,
 ) : MoviesRepository {
-
-//    override fun searchMovies(expression: String): Resource<List<Movie>> {
-//        val response = networkClient.doRequest(MovieSearchRequest(expression))
-//        //можно тут трансформировать данные для передачи в domain-слой если надо
-//
-//        return when (response.resultCode) {
-//            -1 -> {
-//                Resource.Error("Отсутствет подключение к интернету")
-//            }
-//
-//            200 -> {
-//                val stored = localStorage.getSavedFavorites()
-//                val foundMovies = (response as MovieSearchResponse).results
-//                if (foundMovies.isNotEmpty()) {
-//                    Resource.Success(foundMovies.map {
-//                        Movie(
-//                            it.id, it.image, it.title,
-//                            it.description,
-//                            stored.contains(it.id)
-//                        )
-//                    })
-//                } else Resource.Error("Ничего не найдено")
-//            }
-//
-//            else -> {
-//                Resource.Error("Ошибка сервера")
-//            }
-//        }
-//    }
 
     override fun searchMovies(expression: String): Flow<Resource<List<Movie>>> = flow {
         val response = networkClient.doRequestSuspend(MovieSearchRequest(expression))
@@ -71,9 +47,15 @@ class MoviesRepositoryImpl(
                                 it.id, it.image, it.title, it.description,
                                 stored.contains(it.id))
                         }))
+                        saveMovie(movies)
                     } ?: emit(Resource.Error("Ничего не найдено"))
             }
         }
+    }
+
+    private suspend fun saveMovie(movies: List<MovieDto>) {
+        val movieEntities = movies.map { movie -> movieDbConvertor.map(movie) }
+        appDatabase.movieDao().insertMovies(movieEntities)
     }
 
     override fun searchNames(expression: String): Flow<Resource<List<Name>>> = flow {
