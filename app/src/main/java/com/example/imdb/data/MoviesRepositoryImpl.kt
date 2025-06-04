@@ -12,7 +12,7 @@ import com.example.imdb.data.dto.MovieSearchRequest
 import com.example.imdb.data.dto.MovieSearchResponse
 import com.example.imdb.data.dto.NamesSearchRequest
 import com.example.imdb.data.dto.NamesSearchResponse
-import com.example.imdb.domain.api.MoviesRepository
+import com.example.imdb.domain.search.MoviesRepository
 import com.example.imdb.domain.models.Movie
 import com.example.imdb.domain.models.MovieCast
 import com.example.imdb.domain.models.MovieDetails

@@ -11,10 +11,10 @@ import com.example.imdb.data.converters.MovieDbConvertor
 import com.example.imdb.data.db.AppDatabase
 import com.example.imdb.data.network.ImdbApiService
 import com.example.imdb.data.network.RetrofitNetworkClient
-import com.example.imdb.domain.api.MoviesInteractor
-import com.example.imdb.domain.api.MoviesRepository
-import com.example.imdb.domain.db.HistoryInteractor
-import com.example.imdb.domain.db.HistoryRepository
+import com.example.imdb.domain.search.MoviesInteractor
+import com.example.imdb.domain.search.MoviesRepository
+import com.example.imdb.domain.history.HistoryInteractor
+import com.example.imdb.domain.history.HistoryRepository
 import com.example.imdb.domain.impl.HistoryInteractorImpl
 import com.example.imdb.domain.impl.MoviesInteractorImpl
 import com.example.imdb.presentation.cast.CastViewModel

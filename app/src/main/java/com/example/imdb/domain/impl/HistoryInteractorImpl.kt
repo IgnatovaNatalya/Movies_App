@@ -1,7 +1,7 @@
 package com.example.imdb.domain.impl
 
-import com.example.imdb.domain.db.HistoryInteractor
-import com.example.imdb.domain.db.HistoryRepository
+import com.example.imdb.domain.history.HistoryInteractor
+import com.example.imdb.domain.history.HistoryRepository
 import com.example.imdb.domain.models.Movie
 import kotlinx.coroutines.flow.Flow
 

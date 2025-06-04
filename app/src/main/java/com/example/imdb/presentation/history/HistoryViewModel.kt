@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.imdb.R
-import com.example.imdb.domain.db.HistoryInteractor
+import com.example.imdb.domain.history.HistoryInteractor
 import com.example.imdb.domain.models.Movie
 import kotlinx.coroutines.launch
 

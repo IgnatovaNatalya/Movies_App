@@ -2,6 +2,7 @@ package com.example.imdb.presentation
 
 import android.os.Bundle
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -11,10 +12,14 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.imdb.R
 import com.example.imdb.databinding.ActivityRootBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+
 
 class RootActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityRootBinding
+
+    lateinit var confirmDialog: MaterialAlertDialogBuilder
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +53,20 @@ class RootActivity : AppCompatActivity() {
                 }
             }
         }
+
+        confirmDialog = MaterialAlertDialogBuilder(this)
+            .setTitle("Вы действительно хотите выйти из приложения?")
+            .setNeutralButton("Нет") { dialog, which -> }
+            .setPositiveButton("Да") { dialog, which -> finish() }
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (navController.currentDestination?.id != navController.graph.startDestinationId)
+                    navController.popBackStack()
+                else
+                    confirmDialog.show()
+            }
+        })
     }
 
     fun animateBottomNavigationView() {

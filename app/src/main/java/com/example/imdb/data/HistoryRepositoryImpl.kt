@@ -3,7 +3,7 @@ package com.example.imdb.data
 import com.example.imdb.data.converters.MovieDbConvertor
 import com.example.imdb.data.db.AppDatabase
 import com.example.imdb.data.db.entity.MovieEntity
-import com.example.imdb.domain.db.HistoryRepository
+import com.example.imdb.domain.history.HistoryRepository
 import com.example.imdb.domain.models.Movie
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

@@ -1,4 +1,4 @@
-package com.example.imdb.domain.api
+package com.example.imdb.domain.search
 
 import com.example.imdb.domain.models.Movie
 import com.example.imdb.domain.models.MovieCast

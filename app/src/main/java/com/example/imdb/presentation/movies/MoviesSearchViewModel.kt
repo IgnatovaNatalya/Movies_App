@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.imdb.R
-import com.example.imdb.domain.api.MoviesInteractor
+import com.example.imdb.domain.search.MoviesInteractor
 import com.example.imdb.domain.models.Movie
 import com.example.imdb.util.debounce
 import kotlinx.coroutines.launch

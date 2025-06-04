@@ -3,7 +3,7 @@ package com.example.imdb.presentation.details.about
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.imdb.domain.api.MoviesInteractor
+import com.example.imdb.domain.search.MoviesInteractor
 import com.example.imdb.domain.models.MovieDetails
 import com.example.imdb.presentation.details.MovieDetailsState
 

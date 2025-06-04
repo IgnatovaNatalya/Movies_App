@@ -1,7 +1,7 @@
 package com.example.imdb.domain.impl
 
-import com.example.imdb.domain.api.MoviesInteractor
-import com.example.imdb.domain.api.MoviesRepository
+import com.example.imdb.domain.search.MoviesInteractor
+import com.example.imdb.domain.search.MoviesRepository
 import com.example.imdb.domain.models.Movie
 import com.example.imdb.domain.models.Name
 import com.example.imdb.util.Resource
