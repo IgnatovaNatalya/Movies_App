@@ -76,7 +76,6 @@ class MoviesInteractorImpl(private val repository: MoviesRepository) : MoviesInt
     }
 
 
-
     override fun addMovieToFavorites(movieId:String) {
         repository.addMovieToFavorites(movieId)
     }
